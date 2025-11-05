@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1066173331667",
+    "project_id": "ducpeppa",
+    "storage_bucket": "ducpeppa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066173331667:android:679c026cbe9f57321e3c26",
+        "android_client_info": {
+          "package_name": "com.ducky.duckyapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUWJRdmmbBKGERlY0WskWNoMxlLPpyLCc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
