@@ -1,9 +1,10 @@
+import 'package:duckyapp/views/verify_email_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-import 'login_view.dart';
-import 'register_view.dart';
+import 'views/login_view.dart';
+import 'views/register_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +14,12 @@ void main() {
       primarySwatch: Colors.blue,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
     ),
-    home : const LoginView(),
+    home : const HomePage(),
+    routes : {
+      '/login/' : (context) => const LoginView(),
+      '/register/' : (context) => const RegisterView(),
+      '/home/' : (context) => const HomePage(),
+    }
   )
   );
 }
@@ -24,29 +30,98 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('HomePage'),
       ),
       body: FutureBuilder(
           future: Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform,
           ),
           builder: (context, snapshot) {
-            final user = FirebaseAuth.instance.currentUser;
-            final verified = user?.emailVerified ?? false;
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                if (verified == false) {
-                  return const Text("Email not verified");
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  if (user.emailVerified) {
+                    return const NoteView();
+                  } else {
+                    return const VerifyEmailView();
+                  }
+                } else {
+                  return const  LoginView();
                 }
-                return const Text("Done");
-              case ConnectionState.waiting:
-                return const Text("Loading");
               default:
-                return const Text("Something went wrong");
+                return CircularProgressIndicator();
             }
           }
       ),
     );
+  }
+}
+enum MenuAction {logOut}
+class NoteView extends StatefulWidget {
+  const NoteView({super.key});
+  @override
+  State<NoteView> createState() => _NoteViewState();
+}
+
+class _NoteViewState extends State<NoteView> {
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      appBar: AppBar(
+        title: const Text("Main UI"),
+        actions: [
+          PopupMenuButton<MenuAction>(
+            onSelected: (value) async {
+              switch (value) {
+                case MenuAction.logOut:
+                  final shouldLogOut = await showLogOutDialog(context);
+                  if (shouldLogOut) {
+                    FirebaseAuth.instance.signOut();
+                  }
+                  else {
+                    return;
+                  }
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<MenuAction>(
+                  value: MenuAction.logOut,
+                  child: Text('Log out'),
+
+                ),
+              ];
+            }
+          )
+        ],
+      ),
+    );
+  }
+}
+Future<bool> showLogOutDialog(BuildContext context) {
+  return showDialog<bool>(
+       context: (context),
+       builder: (context) {
+          return AlertDialog(
+            title: const Text("Log out"),
+            content: const Text('Are you sure you want to log out ?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+               }, child: const Text('Cancel'),
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  }, child: const Text('Log out'),
+              ),
+            ],
+          );
+       },
+   ).then((value) => value ?? false);
+}
 
 
 

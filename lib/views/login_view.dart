@@ -1,7 +1,8 @@
 import 'package:duckyapp/firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:duckyapp/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:duckyapp/services/firebase_provider.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -56,23 +57,15 @@ class _LoginViewState extends State<LoginView> {
                       TextButton(onPressed: () async {
                         final email = _email.text;
                         final password = _password.text;
-                        try {
-                          final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-                        } on FirebaseAuthException catch (e) {
-                            if (e.code == 'user-not-found') {
-                              print('No user found for that email.');
-                            } else if (e.code == 'wrong-password') {
-                              print('Wrong password.');
-                            } else if (e.code == 'user-disabled') {
-                              print("This user has been disabled");
-                            } else if (e.code == "invalid-email") {
-                              print("Invalid email");
-                            }
-                            else {
-                              print(e.code);
-                            }
-                        }
+                        AuthService authService = AuthService(provider: FirebaseProvider());
+                        await authService.logIn(email: email,password:  password);
+                        Navigator.of(context).pushNamedAndRemoveUntil('/home/', (route) => false,);
                       }, child: const Text("Login"),
+                      ),
+                      TextButton(onPressed: () async {
+                        Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false,);
+                      },
+                      child: const Text("Not registered yet ? Click here to register !"),
                       ),
                     ]
                 );
