@@ -1,4 +1,4 @@
-import 'package:duckyapp/services/auth_exceptions.dart';
+import 'package:duckyapp/data/data_source/fire_base/auth_exceptions.dart';
 import 'package:duckyapp/services/auth_user.dart';
 import 'package:duckyapp/services/provider.dart';
 import 'package:flutter/cupertino.dart';

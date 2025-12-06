@@ -1,5 +1,5 @@
 
-import 'package:duckyapp/services/auth_exceptions.dart';
+import 'package:duckyapp/data/data_source/fire_base/auth_exceptions.dart';
 import 'package:duckyapp/services/auth_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

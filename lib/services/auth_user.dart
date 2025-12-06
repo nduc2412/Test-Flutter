@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'auth_exceptions.dart';
+import '../data/data_source/fire_base/auth_exceptions.dart';
 @immutable
 class AuthUser {
     final String id;
