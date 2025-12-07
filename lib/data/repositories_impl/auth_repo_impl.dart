@@ -1,33 +1,51 @@
+
 import 'package:duckyapp/data/models/auth_user_model.dart';
+import 'package:duckyapp/domain/entities/user_entity.dart';
 import 'package:duckyapp/domain/repository/auth_repository.dart';
 
+import '../data_source/auth_data_source.dart';
+
 class AuthRepositoryImpl implements AuthRepository {
-  final DataSource =
+  final AuthDataSource dataSource;
+  AuthRepositoryImpl({required this.dataSource});
+
   @override
-  void addUser({required AuthUserModel user}) {
-    // TODO: implement addUser
+  Future<void> deleteCurrentUser() {
+    return dataSource.deleteCurrentUser();
   }
 
   @override
-  void deleteUser({required String id}) {
-    // TODO: implement deleteUser
+  AuthUserEntity getCurrentUser() {
+    final userModel = dataSource.getCurrentUser();
+    final userEntity = userModel.toEntity();
+    return userEntity;
   }
 
   @override
-  List<AuthUserModel> getAllUsers() {
-    // TODO: implement getAllUsers
-    throw UnimplementedError();
+  Future<void> sendEmailVerification()  {
+    return dataSource.sendEmailVerification();
   }
 
   @override
-  AuthUserModel getCurrentUser({required String id}) {
-    // TODO: implement getCurrentUser
-    throw UnimplementedError();
+  Future<AuthUserEntity> logIn({required String email, required String password}) {
+    final userEntity = dataSource.logIn(email: email, password: password).then((model) => model.toEntity());
+    return userEntity;
+  }
+
+
+  @override
+  Future<void> sendPasswordChange() {
+    return dataSource.sendPasswordChange();
   }
 
   @override
-  void updateUser({required String id}) {
-    // TODO: implement updateUser
+  Future<void> signOut() {
+    return dataSource.signOut();
   }
 
+  @override
+  Future<AuthUserEntity> signUp({required String email, required String password}) {
+    final userEntity = dataSource.signUp(email: email, password: password).then((model) => model.toEntity());
+    return userEntity;
+  }
 }

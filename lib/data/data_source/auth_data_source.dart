@@ -3,8 +3,8 @@ import 'package:duckyapp/domain/entities/user_entity.dart';
 import '../models/auth_user_model.dart';
 
 abstract class AuthDataSource {
-  AuthUserModel getCurrentUser({required String userId});
-  Future<void> deleteUser({required String userId});
+  AuthUserModel getCurrentUser();
+  Future<void> deleteCurrentUser();
   // Authentication
   Future<void> sendEmailVerification();
   Future<void> sendPasswordChange();

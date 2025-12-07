@@ -10,13 +10,13 @@ class FireBaseAuthDataSource implements AuthDataSource {
   final firebase = FirebaseAuth.instance;
 
   @override
-  Future<void> deleteUser({required String userId}) {
+  Future<void> deleteCurrentUser() {
     // TODO: implement deleteUser
     throw UnimplementedError();
   }
 
   @override
-  AuthUserModel getCurrentUser({required String userId}) {
+  AuthUserModel getCurrentUser() {
     final currentUser = firebase.currentUser;
     if (currentUser == null) {
       throw UserNotLogIn();
