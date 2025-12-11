@@ -1,0 +1,11 @@
+import 'package:duckyapp/domain/repository/auth_repository.dart';
+import 'package:duckyapp/domain/use_cases/use_case.dart';
+
+class ForgotPasswordUseCase implements UseCaseNoParams<void> {
+  AuthRepository authRepo;
+  ForgotPasswordUseCase({required this.authRepo});
+  @override
+  Future<void> call() {
+    return authRepo.sendPasswordChange();
+  }
+}
