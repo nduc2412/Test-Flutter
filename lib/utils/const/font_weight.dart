@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-class NTextWeight {
+class NFontWeight {
   static const FontWeight titleFontWeight = FontWeight.w800;
   static const FontWeight subTitleFontWeight = FontWeight.w500;
   static const FontWeight boldFontWeight = FontWeight.w600;

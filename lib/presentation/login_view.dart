@@ -10,8 +10,11 @@ import "package:duckyapp/utils/const/text_size.dart";
 import "package:duckyapp/utils/routes/routes.dart";
 import "package:flutter/material.dart";
 
+import "../common/email_text_field.dart";
 import "../common/footer_social_options.dart";
 import "../common/form_divider.dart";
+import "../common/login_sign_up_button.dart";
+import "../common/password_text_field.dart";
 import "../utils/const/note_space.dart";
 import "customized_widgets.dart";
 
@@ -58,7 +61,7 @@ class _LoginViewState extends State<LoginView> {
                   Text(
                     NText.loginTitle,
                     style: TextStyle(
-                      fontWeight: NTextWeight.titleFontWeight,
+                      fontWeight: NFontWeight.titleFontWeight,
                       fontSize: NTextSize.titleFontSize,
                     ),
                   ),
@@ -67,7 +70,7 @@ class _LoginViewState extends State<LoginView> {
                     NText.loginSubtitle,
                     style: TextStyle(
                       fontSize: NTextSize.subTitleFontSize,
-                      fontWeight: NTextWeight.subTitleFontWeight,
+                      fontWeight: NFontWeight.subTitleFontWeight,
                     ),
                   ),
                 ],
@@ -80,42 +83,10 @@ class _LoginViewState extends State<LoginView> {
                 child: Column(
                   children: [
                     // Email text field
-                    TextFormField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            NFieldRadius.textFieldRadius,
-                          ),
-                        ),
-                        labelText: NText.emailLabel,
-                        labelStyle: TextStyle(fontWeight: FontWeight.w600),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: NSpace.textFieldContentPadding,
-                        ),
-                      ),
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
+                    EmailTextField(),
                     // Password text field
                     SizedBox(height: NSpace.spaceBtwTextField),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock_outline),
-                        suffixIcon: Icon(Icons.visibility),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            NFieldRadius.textFieldRadius,
-                          ),
-                        ),
-                        labelText: NText.passwordLabel,
-                        labelStyle: TextStyle(fontWeight: FontWeight.w600),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: NSpace.textFieldContentPadding,
-                        ),
-                      ),
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                      obscureText: _obscureText,
-                    ),
+                    PasswordTextField(obscureText: _obscureText),
                     // Remember me and forgot password
                     SizedBox(height: NSpace.spaceBtwTextField / 5),
                     Row(
@@ -150,28 +121,7 @@ class _LoginViewState extends State<LoginView> {
                     SizedBox(
                       height: NButtonSize.buttonHeight,
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => {},
-                        style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStateProperty.resolveWith<Color?>((
-                                Set<WidgetState> states,
-                              ) {
-                                if (states.contains(WidgetState.pressed)) {
-                                  return ButtonColors.blackOnPressed;
-                                } else {
-                                  return ButtonColors.black;
-                                }
-                              }),
-                        ),
-                        child: Text(
-                          NText.login,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      child: MainButton(displayText: NText.login, onPressed: () {},),
                     ),
                     // Sign up button
                     SizedBox(height: NSpace.spaceBtwItems / 2),
@@ -180,7 +130,7 @@ class _LoginViewState extends State<LoginView> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, Routes.signUp);
+                          Navigator.pushNamedAndRemoveUntil(context, Routes.signUp, (route) => false);
                         },
                         style: ButtonStyle(
                           backgroundColor:
@@ -221,6 +171,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
+
 
 
 void navigate() {}
