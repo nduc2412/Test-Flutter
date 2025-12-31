@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../utils/const/field_radius.dart';
-import '../utils/const/note_space.dart';
-import '../utils/const/note_text.dart';
+import '../../utils/const/field_radius.dart';
+import '../../utils/const/note_space.dart';
+import '../../utils/const/note_text.dart';
 
 class EmailTextField extends StatelessWidget {
   const EmailTextField({

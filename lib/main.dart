@@ -1,4 +1,5 @@
 
+import 'package:duckyapp/presentation/email_verify_waiting.dart';
 import 'package:duckyapp/presentation/login_view.dart';
 import 'package:duckyapp/presentation/sign_up_view.dart';
 import 'package:duckyapp/utils/routes/routes.dart';
@@ -20,6 +21,7 @@ void main() {
     routes : {
       Routes.login : (context) => const LoginView(),
       Routes.signUp : (context) => const SignUpView(),
+      Routes.verifyEmail : (context) => const EmailVerifyWaitingScreen(),
       // '/home/' : (context) => const HomePage(),
     }
   )

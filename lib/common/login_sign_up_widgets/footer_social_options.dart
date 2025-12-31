@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../utils/const/button_color.dart';
-import '../utils/const/button_size.dart';
-import '../utils/const/image.dart';
-import '../utils/const/note_space.dart';
+import '../../utils/const/button_color.dart';
+import '../../utils/const/size/button_size.dart';
+import '../../utils/const/image.dart';
+import '../../utils/const/note_space.dart';
 
 
 class FooterSocialOptions extends StatelessWidget {
@@ -25,7 +25,7 @@ class FooterSocialOptions extends StatelessWidget {
           height: NButtonSize.socialButtonSize,
           child: IconButton(
             onPressed: () {},
-            icon: NImage.google,
+            icon: Image(image: AssetImage(NImage.google)),
             style: ButtonStyle(
               backgroundColor:
               WidgetStateProperty.resolveWith<Color?>((
@@ -50,7 +50,7 @@ class FooterSocialOptions extends StatelessWidget {
           height: NButtonSize.socialButtonSize,
           child: IconButton(
             onPressed: () {},
-            icon: NImage.facebook,
+            icon: Image(image: AssetImage(NImage.facebook)),
             style: ButtonStyle(
               backgroundColor:
               WidgetStateProperty.resolveWith<Color?>((

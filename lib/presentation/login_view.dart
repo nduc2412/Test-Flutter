@@ -1,22 +1,22 @@
 import "dart:ui";
 
 import "package:duckyapp/utils/const/button_color.dart";
-import "package:duckyapp/utils/const/button_size.dart";
+import "package:duckyapp/utils/const/size/button_size.dart";
 import "package:duckyapp/utils/const/field_radius.dart";
 import "package:duckyapp/utils/const/font_weight.dart";
 import "package:duckyapp/utils/const/image.dart";
 import "package:duckyapp/utils/const/note_text.dart";
-import "package:duckyapp/utils/const/text_size.dart";
+import "package:duckyapp/utils/const/size/text_size.dart";
 import "package:duckyapp/utils/routes/routes.dart";
 import "package:flutter/material.dart";
 
-import "../common/email_text_field.dart";
-import "../common/footer_social_options.dart";
-import "../common/form_divider.dart";
-import "../common/login_sign_up_button.dart";
-import "../common/password_text_field.dart";
+import "../common/login_sign_up_widgets/email_text_field.dart";
+import "../common/login_sign_up_widgets/footer_social_options.dart";
+import "../common/login_sign_up_widgets/form_divider.dart";
+import "../common/login_sign_up_widgets/login_sign_up_button.dart";
+import "../common/login_sign_up_widgets/password_text_field.dart";
 import "../utils/const/note_space.dart";
-import "customized_widgets.dart";
+import "../utils/const/size/NImageSize.dart";
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -55,7 +55,7 @@ class _LoginViewState extends State<LoginView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Logo
-                  NImage.noteLogo,
+                  Image(image: AssetImage(NImage.noteLogo), height: NImageSize.logoHeight,),
                   SizedBox(height: NSpace.spaceBtwTitleLogo),
                   // Title and subtitle
                   Text(

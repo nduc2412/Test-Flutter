@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/const/note_space.dart';
+import '../../utils/const/note_space.dart';
 class FormDivider extends StatelessWidget {
   final String displayText;
   const FormDivider({

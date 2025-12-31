@@ -1,9 +1,9 @@
-import 'package:duckyapp/common/email_text_field.dart';
-import 'package:duckyapp/common/footer_social_options.dart';
-import 'package:duckyapp/common/form_divider.dart';
-import 'package:duckyapp/common/login_sign_up_button.dart';
-import 'package:duckyapp/common/password_text_field.dart';
-import 'package:duckyapp/utils/const/button_size.dart';
+import 'package:duckyapp/common/login_sign_up_widgets/email_text_field.dart';
+import 'package:duckyapp/common/login_sign_up_widgets/footer_social_options.dart';
+import 'package:duckyapp/common/login_sign_up_widgets/form_divider.dart';
+import 'package:duckyapp/common/login_sign_up_widgets/login_sign_up_button.dart';
+import 'package:duckyapp/common/login_sign_up_widgets/password_text_field.dart';
+import 'package:duckyapp/utils/const/size/button_size.dart';
 import 'package:duckyapp/utils/const/field_radius.dart';
 import 'package:duckyapp/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../utils/const/font_weight.dart';
 import '../utils/const/note_space.dart';
 import '../utils/const/note_text.dart';
-import '../utils/const/text_size.dart';
+import '../utils/const/size/text_size.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -163,7 +163,9 @@ class _SignUpViewState extends State<SignUpView> {
                       width: double.infinity,
                       child: MainButton(
                         displayText: NText.signUp,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(context, Routes.verifyEmail, (route) => false, arguments: "23@gmail.com");
+                        },
                       ),
                     ),
 

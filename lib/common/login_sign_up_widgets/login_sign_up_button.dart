@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/const/button_color.dart';
+import '../../utils/const/button_color.dart';
 class MainButton extends StatelessWidget {
   final String displayText;
   final void Function()? onPressed;
