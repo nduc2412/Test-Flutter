@@ -2,7 +2,7 @@ import 'package:duckyapp/data/data_source/fire_base/auth_exceptions.dart';
 import 'package:duckyapp/services/auth_user.dart';
 import 'package:duckyapp/services/provider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:test/test.dart';
+import 'package:test/note_preview.dart';
 // email = "tductri123@gmail.com"
 // password = ductri;
 void main() {
@@ -43,7 +43,7 @@ class MockProvider implements Provider {
     if (_isInitialized == false) throw NotInitializedException();
     if (email != "tductri123@gmail.com") throw UserNotFound();
     if (password != "ductri") throw WrongPassword();
-    const AuthUser user = AuthUser(id: "my_id", email: "tductri123@gmail.com" , isVerified: false);
+    const AuthUser user = AuthUser(id: "my_id", email: "tductri123@gmail.com" , isEmailVerified: false);
     return Future.value(user);
   }
 
@@ -59,7 +59,7 @@ class MockProvider implements Provider {
   Future<void> sendEmailVerification() {
     if (_isInitialized == false) throw NotInitializedException();
     if (_user == null) throw UserNotFound();
-    const user = AuthUser(id: "my_id", email: "tductri123@gmail.com" , isVerified: true);
+    const user = AuthUser(id: "my_id", email: "tductri123@gmail.com" , isEmailVerified: true);
     _user = user;
     return Future.value();
 

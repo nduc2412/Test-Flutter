@@ -6,7 +6,8 @@ import 'package:duckyapp/domain/repository/note_repository.dart';
 import '../data_source/fire_store/fire_store.dart';
 
 class NoteRepositoryImpl implements NoteRepository {
-  final NoteDataSource noteDataSource = FireStoreNoteDataSource();
+  final NoteDataSource noteDataSource;
+  NoteRepositoryImpl({required this.noteDataSource});
   @override
   Future<NoteEntity> createNote({required String ownerId}) async {
     final fetchedNote = await noteDataSource.createNote(ownerId: ownerId).then((model) => model.toEntity());

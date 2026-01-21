@@ -12,11 +12,22 @@ class EmailTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: (email) {
+          if (email == null || email.trim().isEmpty) {
+            return NText.emailCannotEmpty;
+          }
+          final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+          if (!emailRegex.hasMatch(email.trim())) {
+            return NText.invalidEmail;
+          }
+          return null; // hợp lệ
+
+      },
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.email_outlined),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
-            NFieldRadius.textFieldRadius,
+            NRadius.textFieldRadius,
           ),
         ),
         labelText: NText.emailLabel,

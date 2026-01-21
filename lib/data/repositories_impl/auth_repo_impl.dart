@@ -34,8 +34,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
 
   @override
-  Future<void> sendPasswordChange() {
-    return dataSource.sendPasswordChange();
+  Future<void> sendPasswordChange({required String email}) {
+    return dataSource.sendPasswordChange(email: email);
   }
 
   @override
@@ -47,5 +47,10 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AuthUserEntity> signUp({required String email, required String password}) {
     final userEntity = dataSource.signUp(email: email, password: password).then((model) => model.toEntity());
     return userEntity;
+  }
+
+  @override
+  Future<AuthUserEntity> reloadUser() async {
+      return dataSource.reloadUser().then((model) => model.toEntity());
   }
 }

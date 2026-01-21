@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/const/button_color.dart';
+import '../../utils/const/color.dart';
 import '../../utils/const/size/button_size.dart';
 import '../../utils/const/image.dart';
 import '../../utils/const/note_space.dart';
@@ -32,9 +32,9 @@ class FooterSocialOptions extends StatelessWidget {
                   Set<WidgetState> states,
                   ) {
                 if (states.contains(WidgetState.pressed)) {
-                  return ButtonColors.whiteOnPressed;
+                  return NColors.whiteOnPressed;
                 } else {
-                  return ButtonColors.white;
+                  return NColors.white;
                 }
               }),
             ),
@@ -57,9 +57,9 @@ class FooterSocialOptions extends StatelessWidget {
                   Set<WidgetState> states,
                   ) {
                 if (states.contains(WidgetState.pressed)) {
-                  return ButtonColors.whiteOnPressed;
+                  return NColors.whiteOnPressed;
                 } else {
-                  return ButtonColors.white;
+                  return NColors.white;
                 }
               }),
             ),

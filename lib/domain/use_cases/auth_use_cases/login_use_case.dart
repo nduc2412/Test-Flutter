@@ -1,6 +1,5 @@
 import 'package:duckyapp/domain/repository/auth_repository.dart';
 import 'package:duckyapp/domain/use_cases/use_case.dart';
-import 'package:duckyapp/services/auth_user.dart';
 
 import '../../entities/user_entity.dart';
 

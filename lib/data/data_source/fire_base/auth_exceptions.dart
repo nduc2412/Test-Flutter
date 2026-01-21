@@ -1,12 +1,21 @@
 // Login exception
-class UserNotFound implements Exception {}
-class WrongPassword implements Exception {}
-class InvalidEmail implements Exception {}
-class UserDisabled implements Exception {}
+class UserNotFound implements AuthException {}
+class WrongPassword implements AuthException {}
+class InvalidEmail implements AuthException {}
+class UserDisabled implements AuthException {}
 // Register exception
-class WeakPassword implements Exception {}
-class UserAlreadyExists implements Exception {}
+class WeakPassword implements AuthException {}
+class UserAlreadyExists implements AuthException {}
 // Not have user
-class UserNotLogIn implements Exception {}
+class UserNotLogIn implements AuthException {}
+// Send password change exception
+class MissingEmail implements AuthException {}
+//Send email verification exception
+class TooManyRequest implements AuthException {}
+class InvalidRecipientEmail implements AuthException {}
+// Forgot password exception
+class InvalidEmailForgotPassword implements AuthException {}
 // Generic exception
-class GenericException implements Exception {}
+class GenericException implements AuthException {}
+
+class AuthException implements Exception {}

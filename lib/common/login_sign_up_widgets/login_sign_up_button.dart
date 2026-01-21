@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/const/button_color.dart';
+import '../../utils/const/color.dart';
 class MainButton extends StatelessWidget {
   final String displayText;
   final void Function()? onPressed;
@@ -20,9 +20,9 @@ class MainButton extends StatelessWidget {
             Set<WidgetState> states,
             ) {
           if (states.contains(WidgetState.pressed)) {
-            return ButtonColors.blackOnPressed;
+            return NColors.blackOnPressed;
           } else {
-            return ButtonColors.black;
+            return NColors.black;
           }
         }),
       ),
@@ -30,7 +30,7 @@ class MainButton extends StatelessWidget {
         displayText,
         style: TextStyle(
           fontWeight: FontWeight.w500,
-          color: Colors.white,
+          color: NColors.white,
         ),
       ),
     );

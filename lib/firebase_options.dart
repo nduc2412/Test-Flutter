@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'ducpeppa.firebaseapp.com',
     storageBucket: 'ducpeppa.firebasestorage.app',
   );
+
 }

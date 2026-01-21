@@ -7,8 +7,9 @@ abstract class AuthDataSource {
   Future<void> deleteCurrentUser();
   // Authentication
   Future<void> sendEmailVerification();
-  Future<void> sendPasswordChange();
+  Future<void> sendPasswordChange({required String email});
   Future<void> signOut();
   Future<AuthUserModel> logIn({required String email, required String password});
   Future<AuthUserModel> signUp({required String email, required String password});
+  Future<AuthUserModel> reloadUser();
 }

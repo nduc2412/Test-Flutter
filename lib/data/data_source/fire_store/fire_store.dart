@@ -4,8 +4,9 @@ import 'package:duckyapp/data/models/note_model.dart';
 import 'fire_store_constant.dart';
 import '../data_source_exceptions.dart';
 class FireStoreNoteDataSource implements NoteDataSource {
-  static  FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  final notes = fireStore.collection(notesCollectionPath);
+  final FirebaseFirestore fireStore;
+  FireStoreNoteDataSource(this.fireStore);
+  late final notes = fireStore.collection(notesCollectionPath);
   @override
   Future<NoteModel> createNote({required String ownerId}) async {
     try {
@@ -39,13 +40,18 @@ class FireStoreNoteDataSource implements NoteDataSource {
 
   @override
   Stream<Iterable<NoteModel>> allNotes({required String ownerId} ) {
-    final allNotes = notes
-        .where(fireStoreOwnerIdFieldName, isEqualTo: ownerId)
-        .snapshots()
-        .map((snapshot) =>
-        snapshot.docs.map((doc) => NoteModel.fromQueryDocSnap(doc))
-    );
-    return allNotes;
+    try {
+      final allNotes = notes
+          .where(fireStoreOwnerIdFieldName, isEqualTo: ownerId)
+          .snapshots()
+          .map((snapshot) =>
+          snapshot.docs.map((doc) => NoteModel.fromQueryDocSnap(doc))
+      );
+      return allNotes;
+    }
+    catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override

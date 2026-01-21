@@ -8,9 +8,9 @@ class AuthUserModel {
   AuthUserModel({required this.id, required this.email, required this.isVerified});
   factory AuthUserModel.fromFirebase(User firebaseUser)
   {
-      return AuthUserModel(id: firebaseUser.uid, email: firebaseUser.email!, isVerified: true);
+      return AuthUserModel(id: firebaseUser.uid, email: firebaseUser.email!, isVerified: firebaseUser.emailVerified);
   }
   AuthUserEntity toEntity() {
-    return AuthUserEntity(id: id, email: email, isVerified: isVerified);
+    return AuthUserEntity(id: id, email: email, isEmailVerified: isVerified);
   }
 }

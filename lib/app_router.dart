@@ -1,0 +1,67 @@
+import 'package:duckyapp/presentation/bloc/bloc.dart';
+import 'package:duckyapp/presentation/note_bloc/note_bloc.dart';
+import 'package:duckyapp/presentation/views/auth_views/email_verify_success.dart';
+import 'package:duckyapp/presentation/views/auth_views/email_verify_waiting.dart';
+import 'package:duckyapp/presentation/views/auth_views/loading_view.dart';
+import 'package:duckyapp/presentation/views/auth_views/login_view.dart';
+import 'package:duckyapp/presentation/views/auth_views/sign_up_view.dart';
+import 'package:duckyapp/presentation/views/main_views/note_view.dart';
+import 'package:duckyapp/presentation/views/main_views/profile_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:duckyapp/utils/routes/routes.dart';
+
+class AppRouter {
+  final NoteBloc noteBloc;
+  AppRouter({required this.noteBloc});
+  Route onGenerateRoute(RouteSettings setting) {
+    switch (setting.name) {
+
+
+      case Routes.profileView:
+        return MaterialPageRoute(
+          settings: setting,
+          builder: (context) {
+            return BlocProvider.value(value: noteBloc, child:  ProfileView());
+          },
+        );
+
+      case Routes.favouriteView:
+        return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider.value(value: noteBloc, child: const ProfileView());
+          },
+        );
+
+      case Routes.savedView:
+        return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider.value(value: noteBloc, child: const ProfileView());
+          },
+        );
+
+      case Routes.settingsView:
+        return MaterialPageRoute(
+
+          builder: (context) {
+            return BlocProvider.value(value: noteBloc, child: const ProfileView());
+          },
+        );
+
+      case Routes.noteView:
+        return MaterialPageRoute(
+          settings: setting,
+          builder: (context) {
+            return BlocProvider.value(value: noteBloc, child:  NoteView());
+          },
+        );
+
+      default:
+        return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider.value(value: noteBloc, child: const ProfileView());
+          },
+        );
+    }
+  }
+}
