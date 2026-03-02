@@ -9,5 +9,4 @@ abstract class NoteRepository {
   Future<NoteEntity> createNote({required String ownerId});
   Future<void> updateNote({required String noteId, required String text, required String title});
   Future<void> deleteNote({required String noteId, required String ownerId});
-
 }

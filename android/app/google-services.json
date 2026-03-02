@@ -12,7 +12,20 @@
           "package_name": "com.ducky.duckyapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1066173331667-93emdr7uk3covjudlrbnrc0bdgq0k92e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ducky.duckyapp",
+            "certificate_hash": "8d1f29cd6f895fec7b45e1af2ade70ceb4b1377f"
+          }
+        },
+        {
+          "client_id": "1066173331667-c7m159gsbfv6ic0h27moov73u2tl7s0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDUWJRdmmbBKGERlY0WskWNoMxlLPpyLCc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1066173331667-c7m159gsbfv6ic0h27moov73u2tl7s0k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1066173331667-oivtp32kt2vggd4qm5ul1m7eaufppieb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ducky.duckyapp"
+              }
+            }
+          ]
         }
       }
     }

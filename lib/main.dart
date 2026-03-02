@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:duckyapp/app_router.dart';
 import 'package:duckyapp/domain/use_cases/auth_use_cases/get_current_user.dart';
 import 'package:duckyapp/injections.dart';
@@ -80,19 +82,18 @@ class _HomePageState extends State<HomePage> {
     return BlocListener(
       bloc: context.read<AuthBloc>(),
       listener: (context, state) {
-        if (state.runtimeType == LoadingState) {
+        if (state is LoadingState) {
           Navigator.pushReplacementNamed(context, Routes.loading);
-        } else if (state.runtimeType == UserNotLogInState) {
+        } else if (state is UserNotLogInState) {
           Navigator.pushReplacementNamed(context, Routes.login);
-        } else if (state.runtimeType == UserNotVerifiedActionState) {
+        } else if (state is UserNotVerifiedActionState) {
           Navigator.pushReplacementNamed(context, Routes.verifyEmailWaiting);
-        } else if (state.runtimeType == LoginSuccessState) {
-          final currentState = state as LoginSuccessState;
-          // Change this to profile view
-          Navigator.pushReplacementNamed(
+        } else if (state is LoginSuccessState) {
+          log(name: "HomePage", state.currentUser.userName.toString());
+          Navigator.pushNamed(
             context,
             Routes.profileView,
-            arguments: currentState.currentUser,
+            arguments: state.currentUser,
           );
         } else {
           Navigator.pushReplacementNamed(context, Routes.login);

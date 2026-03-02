@@ -56,13 +56,14 @@ class _LoginViewState extends State<LoginView> {
           current is! AuthActionState && current is! AuthErrorState,
 
       listener: (context, state) {
-        if (state.runtimeType == LoginSuccessState) {
+        if (state is LoginSuccessState) {
           Navigator.pushNamedAndRemoveUntil(
             context,
             Routes.profileView,
             (route) => false,
+            arguments: state.currentUser
           );
-        } else if (state.runtimeType == SignUpNavigationClickedActionState) {
+        } else if (state is SignUpNavigationClickedActionState) {
           Navigator.pushNamedAndRemoveUntil(
             context,
             Routes.signUp,
@@ -142,10 +143,10 @@ class _LoginViewState extends State<LoginView> {
                     child: Column(
                       children: [
                         // Email text field
-                        EmailTextField(),
+                        EmailTextField(controller: _emailController,),
                         // Password text field
                         SizedBox(height: NSpace.spaceBtwTextField),
-                        PasswordTextField(),
+                        PasswordTextField(controller: _passwordController,),
                         // Remember me and forgot password
                         SizedBox(height: NSpace.spaceBtwTextField / 5),
                         Row(

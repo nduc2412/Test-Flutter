@@ -7,21 +7,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/note_entity.dart';
 
-
-class Note extends StatelessWidget {
+class Note extends StatefulWidget {
   final NoteEntity note;
+  bool isFavourite;
+  Note({super.key, required this.note, required this.isFavourite});
 
-   const Note({
-    super.key,
-    required this.note,
-  });
+  @override
+  State<Note> createState() => _NoteState();
+}
+
+class _NoteState extends State<Note> {
+  late bool _isFavourite;
+  @override
+  void initState() {
+    _isFavourite = widget.isFavourite;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
+      child: InkWell(
         onTap: () {
-          context.read<NoteBloc>().add(NoteTapEvent(note: note));
+          context.read<NoteBloc>().add(NoteTapEvent(note: widget.note));
         },
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -39,9 +47,9 @@ class Note extends StatelessWidget {
                     children: [
                       // Title
                       Hero(
-                        tag: "${note.id}title",
+                        tag: "${widget.note.id}title",
                         child: Text(
-                          note.title,
+                          widget.note.title,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: NFontWeight.titleFontWeight,
@@ -49,7 +57,7 @@ class Note extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        note.text,
+                        widget.note.text,
                         overflow: TextOverflow.clip,
                         maxLines: 1,
                         style: TextStyle(
@@ -59,16 +67,44 @@ class Note extends StatelessWidget {
                           color: Colors.black.withValues(alpha: 0.5),
                         ),
                       ),
-                      // Day created
-                      Hero(
-                        tag: "${note.id}date",
-                        child: Text(
-                          "1/1/1",
-                          style: TextStyle(
-                            fontWeight: NFontWeight.boldFontWeight,
-                            fontSize: 19,
+                      // Day created and favourite
+                      Row(
+                        children: [
+                          Hero(
+                            tag: "${widget.note.id}date",
+                            child: Text(
+                              "1/1/1",
+                              style: TextStyle(
+                                fontWeight: NFontWeight.boldFontWeight,
+                                fontSize: 19,
+                              ),
+                            ),
                           ),
-                        ),
+                          Spacer(),
+                          IconButton(
+                            icon: _isFavourite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+                            color: Colors.red,
+                            onPressed: () {
+                              if (_isFavourite) {
+                                context.read<NoteBloc>().add(
+                                  DeleteFavouriteNoteEvent(
+                                    note: widget.note,
+                                  ),
+                                );
+                              }
+                              else {
+                                context.read<NoteBloc>().add(
+                                  AddFavouriteNoteEvent(
+                                    note: widget.note,
+                                  ),
+                                );
+                              }
+                              setState(() {
+                                _isFavourite = !_isFavourite;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

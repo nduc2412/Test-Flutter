@@ -13,7 +13,6 @@ import '../../note_bloc/note_events.dart';
 
 class NoteView extends StatefulWidget {
   const NoteView({super.key});
-
   @override
   State<NoteView> createState() => _NoteViewState();
 }
@@ -22,7 +21,6 @@ class _NoteViewState extends State<NoteView> {
   late final NoteEntity note;
   late final TextEditingController _contentController;
   late final TextEditingController _titleController;
-  bool isEditing = false;
 
   @override
   void initState() {
@@ -41,7 +39,6 @@ class _NoteViewState extends State<NoteView> {
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     if (ModalRoute.of(context)!.settings.arguments != null) {
       note = ModalRoute.of(context)!.settings.arguments as NoteEntity;
     } else {
@@ -49,8 +46,8 @@ class _NoteViewState extends State<NoteView> {
     }
     _contentController.text = note.text;
     _titleController.text = note.title;
+    super.didChangeDependencies();
   }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NoteBloc, NoteState>(
@@ -59,14 +56,6 @@ class _NoteViewState extends State<NoteView> {
         if (state is NoteViewBackButtonTappedState) {
           context.read<NoteBloc>().add(ReloadNoteEvent());
           Navigator.pop(context);
-        } else if (state is NoteIsChangingState) {
-          setState(() {
-            isEditing = true;
-          });
-        } else if (state is NoteIsReadingState) {
-          setState(() {
-            isEditing = false;
-          });
         }
       },
       buildWhen: (_, state) => state is! NoteActionState,
@@ -75,7 +64,7 @@ class _NoteViewState extends State<NoteView> {
           return Stack(
             children: [
               NoteScreen(
-                note: note,
+                initialNote: note,
                 contentController: _contentController,
                 titleController: _titleController,
                 isEditing: true,
@@ -83,13 +72,23 @@ class _NoteViewState extends State<NoteView> {
               Center(child: CircularProgressIndicator()),
             ],
           );
-        } else {
+        } else if (state is NoteIsChangingState) {
           return NoteScreen(
             titleController: _titleController,
             contentController: _contentController,
-            note: note,
-            isEditing: isEditing,
+            initialNote: note,
+            isEditing: true,
           );
+        } else if (state is NoteIsReadingState) {
+          return NoteScreen(
+            titleController: _titleController,
+            contentController: _contentController,
+            initialNote: note,
+            isEditing: false,
+          );
+        } else {
+          print(state.runtimeType);
+          return Text(state.runtimeType.toString());
         }
       },
     );
@@ -97,16 +96,16 @@ class _NoteViewState extends State<NoteView> {
 }
 
 class NoteScreen extends StatefulWidget {
-  const NoteScreen({
+  NoteScreen({
     super.key,
-    required this.note,
+    required this.initialNote,
     required TextEditingController contentController,
     required this.isEditing,
     required TextEditingController titleController,
   }) : _contentController = contentController,
        _titleController = titleController;
 
-  final NoteEntity note;
+  final NoteEntity initialNote;
   final TextEditingController _contentController;
   final TextEditingController _titleController;
   final bool isEditing;
@@ -116,12 +115,14 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
+  late NoteEntity note;
   late final FocusNode myFocusNode;
 
   @override
   void initState() {
-    super.initState();
+    note = widget.initialNote;
     myFocusNode = FocusNode();
+    super.initState();
   }
 
   @override
@@ -129,114 +130,186 @@ class _NoteScreenState extends State<NoteScreen> {
     myFocusNode.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFC99180),
-      body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(
-          horizontal: NSpace.paddingScreenSpaceHorizontal / 2,
-          vertical: NSpace.paddingScreenSpaceVertical / 2,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Return and change(save) button
-              Row(
-                // Return button
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_rounded),
-                    onPressed: () {
-                      context.read<NoteBloc>().add(
-                        NoteViewBackButtonTapEvent(),
-                      );
-                    },
-                  ),
-                  Spacer(),
-                  // Change(save) button
-                  IconButton(
-                    icon: widget.isEditing
-                        ? Icon(Icons.save)
-                        : Icon(Icons.note_alt_rounded),
-                    onPressed: () {
-                      if (widget.isEditing) {
-                        context.read<NoteBloc>().add(
-                          NoteSaveButtonClickEvent(
-                            note: NoteEntity(
+    if (widget.isEditing) {
+      return Scaffold(
+        body: SizedBox.expand(
+          child: Material(
+            color: Color(0xFFC99180).withValues(alpha: 0.4),
+            child: Padding(
+              padding: EdgeInsetsGeometry.symmetric(
+                horizontal: NSpace.paddingScreenSpaceHorizontal / 2,
+                vertical: NSpace.paddingScreenSpaceVertical / 2,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Return and change(save) button
+                    Row(
+                      // Return button
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_rounded),
+                          onPressed: () {
+                            context.read<NoteBloc>().add(
+                              NoteViewBackButtonTapEvent(),
+                            );
+                          },
+                        ),
+                        Spacer(),
+                        // Change(save) button
+                        IconButton(
+                          icon: Icon(Icons.save),
+                          onPressed: () {
+                            var newNote = NoteEntity(
                               title: widget._titleController.text,
                               text: widget._contentController.text,
-                              id: widget.note.id,
-                              ownerId: widget.note.ownerId,
-                            ),
-                          ),
-                        );
-                      } else {
-                        context.read<NoteBloc>().add(
-                          NoteChangeButtonClickEvent(),
-                        );
-                        myFocusNode.requestFocus();
-                      }
-                    },
-                  ),
-                ],
-              ),
-              // Title
-              Hero(
-                tag: "${widget.note.id}title",
-                child: Material(
-                  color: Color(0xFFC99180),
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    child: TextField(
-                      controller: widget._titleController,
-                      style: TextStyle(
-                        fontSize: NTextSize.titleFontSize,
-                        fontWeight: NFontWeight.boldFontWeight,
-                      ),
-                      decoration: InputDecoration(border: InputBorder.none),
-                      readOnly: !widget.isEditing,
+                              id: widget.initialNote.id,
+                              ownerId: widget.initialNote.ownerId,
+                            );
+                            context.read<NoteBloc>().add(
+                              NoteSaveButtonClickEvent(
+                                note: newNote,
+                              ),
+                            );
+                            note = newNote;
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: NSpace.spaceBtwItems / 3),
-
-              // Date created / nearest modified date
-              Hero(
-                tag: "${widget.note.id}date",
-                child: Material(
-                  color: Color(0xFFC99180),
-
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "1/1/1",
-                      style: TextStyle(
-                        fontWeight: NFontWeight.boldFontWeight,
-                        fontSize: NTextSize.noteTitleFontSize,
-                        color: NColors.black,
+                    // Title
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: TextField(
+                        controller: widget._titleController,
+                        style: TextStyle(
+                          fontSize: NTextSize.titleFontSize,
+                          fontWeight: NFontWeight.titleFontWeight,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                        readOnly: !widget.isEditing,
                       ),
                     ),
-                  ),
+                    SizedBox(height: NSpace.spaceBtwItems / 3),
+
+                    // Date created / nearest modified date
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "1/1/1",
+                        style: TextStyle(
+                          fontWeight: NFontWeight.boldFontWeight,
+                          fontSize: NTextSize.noteTitleFontSize,
+                        ),
+                      ),
+                    ),
+                    // Main content of the note
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: TextField(
+                        controller: widget._contentController,
+                        maxLines: null,
+                        readOnly: false,
+                        focusNode: myFocusNode,
+                        decoration: InputDecoration(border: InputBorder.none),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // Main content of the note
-              Container(
-                alignment: Alignment.topLeft,
-                child: TextField(
-                  controller: widget._contentController,
-                  maxLines: null,
-                  readOnly: !widget.isEditing,
-                  focusNode: widget.isEditing ? myFocusNode : null,
-                  decoration: InputDecoration(border: InputBorder.none),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        body: SizedBox.expand(
+          child: Material(
+            color: Color(0xFFC99180).withValues(alpha: 0.4),
+            child: Padding(
+              padding: EdgeInsetsGeometry.symmetric(
+                horizontal: NSpace.paddingScreenSpaceHorizontal / 2,
+                vertical: NSpace.paddingScreenSpaceVertical / 2,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Return and change(save) button
+                    Row(
+                      // Return button
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_rounded),
+                          onPressed: () {
+                            context.read<NoteBloc>().add(
+                              NoteViewBackButtonTapEvent(),
+                            );
+                          },
+                        ),
+                        Spacer(),
+                        // Change(save) button
+                        IconButton(
+                          icon: Icon(Icons.note_alt_rounded),
+                          onPressed: () {
+                            context.read<NoteBloc>().add(
+                              NoteChangeButtonClickEvent(),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    // Title
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Hero(
+                        tag: "${widget.initialNote.id}title",
+                        child: Text(
+                          widget._titleController.text,
+                          style: TextStyle(
+                            fontSize: NTextSize.titleFontSize,
+                            fontWeight: NFontWeight.titleFontWeight,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: NSpace.spaceBtwItems / 3),
+                    // Date created / nearest modified date
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Hero(
+                        tag: "${widget.initialNote.id}date",
+                        child: Text(
+                          "1/1/1",
+                          style: TextStyle(
+                            fontWeight: NFontWeight.boldFontWeight,
+                            fontSize: NTextSize.noteTitleFontSize,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Main content of the note
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: TextField(
+                        controller: widget._contentController,
+                        maxLines: null,
+                        readOnly: true,
+                        focusNode: myFocusNode,
+                        decoration: InputDecoration(border: InputBorder.none),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

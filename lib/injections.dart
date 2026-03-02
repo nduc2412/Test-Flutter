@@ -15,31 +15,43 @@ import 'package:get_it/get_it.dart';
 
 import 'app_router.dart';
 import 'data/data_source/auth_data_source.dart';
-import 'data/data_source/fire_store/fire_store.dart';
+import 'data/data_source/fire_store/fire_store_note.dart';
+import 'data/data_source/fire_store/fire_store_user.dart';
 import 'data/data_source/note_data_source.dart';
+import 'data/data_source/user_data_source.dart';
 import 'domain/repository/note_repository.dart';
 import 'domain/use_cases/auth_use_cases/forgot_password_use_case.dart';
 import 'domain/use_cases/auth_use_cases/get_current_user.dart';
 import 'domain/use_cases/auth_use_cases/send_email_verification_use_case.dart';
 import 'domain/use_cases/auth_use_cases/sign_out_use_case.dart';
 import 'domain/use_cases/auth_use_cases/sign_up_use_case.dart';
+import 'domain/use_cases/note_use_cases/add_favourite_use_case.dart';
+import 'domain/use_cases/note_use_cases/delete_favourite_use_case.dart';
 import 'domain/use_cases/note_use_cases/get_all_notes_use_caes.dart';
 
 final locator = GetIt.I;
 
 void setUpDependency() {
-  locator.registerLazySingleton<FirebaseAuth>(
-        () => FirebaseAuth.instance,
-  );
+  locator.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   locator.registerLazySingleton<FirebaseFirestore>(
-        () => FirebaseFirestore.instance,
+    () => FirebaseFirestore.instance,
   );
   // Create data source
-  locator.registerSingleton<AuthDataSource>(FireBaseAuthDataSource(locator<FirebaseAuth>()));
-  locator.registerSingleton<NoteDataSource>(FireStoreNoteDataSource(locator<FirebaseFirestore>()));
+  locator.registerSingleton<AuthDataSource>(
+    FireBaseAuthDataSource(locator<FirebaseAuth>()),
+  );
+  locator.registerSingleton<NoteDataSource>(
+    FireStoreNoteDataSource(locator<FirebaseFirestore>()),
+  );
+  locator.registerSingleton<UserDataSource>(
+    FireStoreUserDataSource(locator<FirebaseFirestore>()),
+  );
   // Create repositories
   locator.registerSingleton<AuthRepository>(
-    AuthRepositoryImpl(dataSource: locator<AuthDataSource>()),
+    AuthRepositoryImpl(
+      authDataSource: locator<AuthDataSource>(),
+      userDataSource: locator<UserDataSource>(),
+    ),
   );
   locator.registerLazySingleton<NoteRepository>(
     () => NoteRepositoryImpl(noteDataSource: locator<NoteDataSource>()),
@@ -90,6 +102,15 @@ void setUpDependency() {
   locator.registerLazySingleton(
     () => DeleteNoteUseCase(noteRepo: locator<NoteRepository>()),
   );
+  //Delete favourite note use case
+  locator.registerLazySingleton(
+        () => DeleteFavouriteNoteUseCase(repo: locator<AuthRepository>()),
+  );
+  // Add favourite note use case
+  locator.registerLazySingleton(
+        () => AddFavouriteNoteUseCase(repo: locator<AuthRepository>()),
+  );
+
 
   // Note bloc
   locator.registerLazySingleton<NoteBloc>(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:duckyapp/data/data_source/fire_base/auth_exceptions.dart';
 import 'package:duckyapp/domain/use_cases/auth_use_cases/forgot_password_use_case.dart';
@@ -22,7 +23,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   SendEmailVerificationUseCase _sendEmailVerificationUseCase;
   SendResetPasswordUseCase _sendResetPasswordUseCase;
   GetCurrentUserUseCase _getCurrentUserUseCase;
-
 
   AuthBloc({
     required LoginUseCase loginUseCase,
@@ -61,7 +61,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<NoteViewNavigationClickedEvent>((event, emit) {
       emit(NoteViewNavigationClickedState());
     });
-
   }
 
   // Event handlers
@@ -75,7 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         LoginParams(email: event.email, password: event.password),
       );
       emit(LoginSuccessState(currentUser));
-    }  catch (e) {
+    } catch (e) {
       if (e.runtimeType == UserNotFound) {
         emit(UserNotFoundState());
       } else if (e.runtimeType == WrongPassword) {
@@ -97,17 +96,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(LoadingState());
     try {
-      final user = _getCurrentUserUseCase.call();
+      final user = await _getCurrentUserUseCase.call();
       if (user.isEmailVerified == false) {
+        log(name: "AuthBloc" ,"Error: User is not verified");
         emit(EmailVerifyingWaitingActionState());
+        return;
       }
+      log(name: "AuthBloc" , "Login success initial");
       emit(LoginSuccessState(user));
-    }
-    catch (e) {
+    } catch (e) {
       if (e.runtimeType == UserNotLogIn) {
+        log(name: "AuthBloc", "Error: User not log in");
         emit(UserNotLogInState());
-      }
-      else {
+      } else {
+        print(e.runtimeType);
+        print(e.toString());
         emit(UserNotLogInState());
       }
     }
@@ -120,13 +123,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(LoadingState());
       final currentUser = await _signUpUseCase.call(
-        SignUpParams(email: event.email, password: event.password),
+        SignUpParams(
+          email: event.email,
+          password: event.password,
+          userName: event.userName,
+          firstName: event.firstName,
+          lastName: event.lastName,
+          phoneNumber: event.phoneNumber,
+        ),
       );
       emit(SignUpSuccessActionState());
     } catch (e) {
-      if (e.runtimeType == WeakPassword) {
+      if (e is WeakPassword) {
         emit(WeakPasswordState());
-      } else if (e.runtimeType == UserAlreadyExists) {
+      } else if (e is UserAlreadyExists) {
         emit(UserAlreadyExistsState());
       } else {
         print(e.runtimeType);
@@ -188,7 +198,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(SignUpNavigationClickedActionState());
   }
 
-  void emailVerifyCheck(EmailVerifyCheckReloadEvent event, Emitter<AuthState> emit) async {
+  void emailVerifyCheck(
+    EmailVerifyCheckReloadEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     final currentUser = await locator<ReloadUserUseCase>().call();
     if (currentUser.isEmailVerified) {
       emit(EmailVerifySuccessActionState());

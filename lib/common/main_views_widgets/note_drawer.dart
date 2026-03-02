@@ -33,6 +33,7 @@ class NoteDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final int index;
+    print("note drawer ${user.email}");
     switch(currentRoute) {
       case Routes.profileView:
          index = DrawerIndex.profile;
@@ -65,7 +66,7 @@ class NoteDrawer extends StatelessWidget {
               children: [
                 Icon(Icons.person, size: NImageSize.profileAvatarHeight),
                 Text(
-                  user.email,
+                  user.userName,
                   style: TextStyle(
                     fontSize: NTextSize.profileTextFontSize,
                     fontWeight: NFontWeight.boldFontWeight,

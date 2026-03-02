@@ -4,17 +4,38 @@ import 'package:duckyapp/domain/use_cases/use_case.dart';
 
 class SignUpUseCase implements UseCase<AuthUserEntity, SignUpParams> {
   AuthRepository authRepository;
+
   SignUpUseCase({required this.authRepository});
 
   @override
   Future<AuthUserEntity> call(SignUpParams params) {
-    return authRepository.signUp(email: params.email, password: params.password);
+    return authRepository.signUp(
+      email: params.email,
+      password: params.password,
+      userName: params.userName,
+      firstName: params.firstName,
+      lastName: params.lastName,
+      phoneNumber: params.phoneNumber,
+    );
   }
-
 }
-class SignUpParams implements Parameters {
+
+class SignUpParams {
   final String email;
   final String password;
-  SignUpParams({required this.email, required this.password});
+  final String userName;
+  final String firstName;
+  final String lastName;
+  final String phoneNumber;
+  final List<String> favourite;
 
+  SignUpParams({
+    required this.email,
+    required this.password,
+    required this.userName,
+    required this.firstName,
+    required this.lastName,
+    required this.phoneNumber,
+    this.favourite = const [],
+  });
 }

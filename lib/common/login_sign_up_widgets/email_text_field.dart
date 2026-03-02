@@ -5,13 +5,16 @@ import '../../utils/const/note_space.dart';
 import '../../utils/const/note_text.dart';
 
 class EmailTextField extends StatelessWidget {
+  final TextEditingController controller;
   const EmailTextField({
+    required this.controller,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       validator: (email) {
           if (email == null || email.trim().isEmpty) {
             return NText.emailCannotEmpty;

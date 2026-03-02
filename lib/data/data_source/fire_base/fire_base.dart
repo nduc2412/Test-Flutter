@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 class FireBaseAuthDataSource implements AuthDataSource {
   final FirebaseAuth firebase;
+
   FireBaseAuthDataSource(this.firebase);
 
   @override
@@ -30,10 +31,12 @@ class FireBaseAuthDataSource implements AuthDataSource {
     required String email,
     required String password,
   }) async {
-    final  UserCredential userCredential;
+    final UserCredential userCredential;
     try {
-      userCredential = await firebase.signInWithEmailAndPassword(email: email, password: password);
-
+      userCredential = await firebase.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw UserNotFound();
@@ -43,7 +46,11 @@ class FireBaseAuthDataSource implements AuthDataSource {
         throw UserDisabled();
       } else if (e.code == "invalid-email") {
         throw InvalidEmail();
+      } else if (e.code == "invalid-credential") {
+        throw UserNotFound();
       } else {
+        print("email: " + email);
+        print("pass: " + password);
         print(e.code);
         print(e.message);
         throw GenericException();
@@ -62,9 +69,9 @@ class FireBaseAuthDataSource implements AuthDataSource {
     required String email,
     required String password,
   }) async {
-    final Future<AuthUserModel> newUserModel;
+    final newUserModel;
     try {
-      newUserModel = firebase
+      newUserModel = await firebase
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((userCre) => userCre.user)
           .then((user) => AuthUserModel.fromFirebase(user!));

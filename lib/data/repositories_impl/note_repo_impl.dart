@@ -3,7 +3,7 @@ import 'package:duckyapp/data/models/note_model.dart';
 import 'package:duckyapp/domain/entities/note_entity.dart';
 import 'package:duckyapp/domain/repository/note_repository.dart';
 
-import '../data_source/fire_store/fire_store.dart';
+import '../data_source/fire_store/fire_store_note.dart';
 
 class NoteRepositoryImpl implements NoteRepository {
   final NoteDataSource noteDataSource;
@@ -35,4 +35,7 @@ class NoteRepositoryImpl implements NoteRepository {
   Future<void> updateNote({required String noteId, required String text, required String title}) async {
     await noteDataSource.updateNote(noteId: noteId, text: text, title: title);
   }
+
 }
+
+

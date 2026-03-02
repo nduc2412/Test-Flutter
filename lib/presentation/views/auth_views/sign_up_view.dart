@@ -9,6 +9,7 @@ import 'package:duckyapp/utils/const/field_radius.dart';
 import 'package:duckyapp/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../common/login_sign_up_widgets/error_dialog.dart';
 import '../../../domain/use_cases/auth_use_cases/forgot_password_use_case.dart';
 import '../../../domain/use_cases/auth_use_cases/login_use_case.dart';
 import '../../../domain/use_cases/auth_use_cases/send_email_verification_use_case.dart';
@@ -33,11 +34,18 @@ class _SignUpViewState extends State<SignUpView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _phoneNumberController.dispose();
+    _userNameController.dispose();
     super.dispose();
   }
 
@@ -54,26 +62,36 @@ class _SignUpViewState extends State<SignUpView> {
             (route) => false,
             arguments: _emailController.text,
           );
-        } else if (state.runtimeType == UserNotFoundState) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(content: Text("UserNotFound")),
-          );
-        } else if (state.runtimeType == UserAlreadyExistsState) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(content: Text("user exists")),
-          );
-        } else if (state.runtimeType == WeakPasswordState) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(content: Text("weak pass")),
-          );
-        } else if (state.runtimeType == GenericExceptionState) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(content: Text("Generic errror")),
-          );
+        } else if (state is AuthErrorState) {
+          if (state is UserDisabledState) {
+            showDialog(
+              context: context,
+              builder: ((context) {
+                return ErrorDialog(text: NText.userDisabled);
+              }),
+            );
+          } else if (state is WrongPasswordState) {
+            showDialog(
+              context: context,
+              builder: (context) => ErrorDialog(text: NText.wrongPassword),
+            );
+          } else if (state is UserNotFoundState) {
+            showDialog(
+              context: context,
+              builder: (context) => ErrorDialog(text: NText.userNotFound),
+            );
+          } else if (state is UserAlreadyExistsState) {
+            showDialog(
+              context: context,
+              builder: (context) => ErrorDialog(text: NText.userAlreadyExists),
+            );
+          } else {
+            print(state.runtimeType);
+            showDialog(
+              context: context,
+              builder: (context) => ErrorDialog(text: NText.unknownError),
+            );
+          }
         }
       },
       builder: (context, state) {
@@ -112,6 +130,7 @@ class _SignUpViewState extends State<SignUpView> {
                             // First name text field
                             Expanded(
                               child: TextFormField(
+                                controller: _firstNameController,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return NText.firstNameRequired;
@@ -144,6 +163,7 @@ class _SignUpViewState extends State<SignUpView> {
                             SizedBox(width: NSpace.spaceBtwItems / 2),
                             Expanded(
                               child: TextFormField(
+                                controller: _lastNameController,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return NText.lastNameRequired;
@@ -178,6 +198,7 @@ class _SignUpViewState extends State<SignUpView> {
                         // User name text field
                         SizedBox(height: NSpace.spaceBtwTextField),
                         TextFormField(
+                          controller: _userNameController,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty)
                               return NText.userNameRequired;
@@ -207,11 +228,12 @@ class _SignUpViewState extends State<SignUpView> {
 
                         // Email text field
                         SizedBox(height: NSpace.spaceBtwTextField),
-                        EmailTextField(),
+                        EmailTextField(controller: _emailController),
 
                         // Phone number text field
                         SizedBox(height: NSpace.spaceBtwTextField),
                         TextFormField(
+                          controller: _phoneNumberController,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty)
                               return NText.phoneNumberRequired;
@@ -240,7 +262,7 @@ class _SignUpViewState extends State<SignUpView> {
 
                         // Password text field
                         SizedBox(height: NSpace.spaceBtwTextField),
-                        PasswordTextField(),
+                        PasswordTextField(controller: _passwordController),
 
                         // Sign up button
                         SizedBox(height: NSpace.spaceBtwItems),
@@ -253,8 +275,12 @@ class _SignUpViewState extends State<SignUpView> {
                               if (_formKey.currentState!.validate()) {
                                 context.read<AuthBloc>().add(
                                   SignUpButtonClickedEvent(
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
+                                    email: _emailController.text.trim(),
+                                    password: _passwordController.text.trim(),
+                                    userName: _userNameController.text.trim(),
+                                    firstName: _firstNameController.text.trim(),
+                                    lastName: _lastNameController.text.trim(),
+                                    phoneNumber: _phoneNumberController.text.trim(),
                                   ),
                                 );
                               }

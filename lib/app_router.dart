@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:duckyapp/presentation/bloc/bloc.dart';
 import 'package:duckyapp/presentation/note_bloc/note_bloc.dart';
 import 'package:duckyapp/presentation/views/auth_views/email_verify_success.dart';
@@ -17,8 +19,10 @@ class AppRouter {
   Route onGenerateRoute(RouteSettings setting) {
     switch (setting.name) {
 
-
       case Routes.profileView:
+         if (setting.arguments == null) {
+           log(name: "AppRouter", "Error: van chua co argument");
+         }
         return MaterialPageRoute(
           settings: setting,
           builder: (context) {
@@ -57,7 +61,9 @@ class AppRouter {
         );
 
       default:
+        log(name: "App Router", setting.name.toString());
         return MaterialPageRoute(
+          settings: setting,
           builder: (context) {
             return BlocProvider.value(value: noteBloc, child: const ProfileView());
           },

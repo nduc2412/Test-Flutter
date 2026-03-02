@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:duckyapp/presentation/bloc/states.dart';
 import 'package:duckyapp/presentation/note_bloc/note_state.dart';
 import 'package:duckyapp/common/main_views_widgets/note_preview.dart';
@@ -30,13 +32,29 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
-    user = ModalRoute.of(context)!.settings.arguments as AuthUserEntity;
+    if (ModalRoute.of(context)!.settings.arguments == null) {
+      user = AuthUserEntity(
+        id: 'L87kkoZcovRi2KRGdDVIGOwN1y83',
+        email: 'phuocduc2007@gmail.com',
+        isEmailVerified: true,
+        userName: 'pduc2412312',
+        firstName: 'Nguyen',
+        lastName: 'Duc',
+        phoneNumber: '0123456789',
+        favourite: [], // Khởi tạo một danh sách rỗng
+      );
+    }
+    else {
+      user = ModalRoute.of(context)!.settings.arguments as AuthUserEntity;
+    }
     context.read<NoteBloc>().add(GetAllNotesEvent(userId: user.id));
+    super.didChangeDependencies();
   }
-
   @override
   Widget build(BuildContext context) {
+    if (ModalRoute.of(context)!.settings.arguments == null) {
+      log(name: "ProfileView", "Error: van chua co argument");
+    }
     return BlocConsumer<NoteBloc, NoteState>(
       bloc: context.read<NoteBloc>(),
       listenWhen: (_, state) => state is NoteActionState,
@@ -46,12 +64,19 @@ class _ProfileViewState extends State<ProfileView> {
         } else if (state is NoteSuggestionTappedState) {
           Navigator.pushNamed(context, Routes.noteView, arguments: state.note);
         } else if (state is NoteTappedState) {
-          Navigator.pushNamed(context, Routes.noteView, arguments: state.note);
+          await Navigator.pushNamed(context, Routes.noteView, arguments: state.note);
+        }
+        else if (state is NeedToDeleteLocalFavouriteNoteState) {
+          user.favourite.remove(state.noteId);
+        }
+        else if (state is NeedToAddLocalFavouriteNoteState) {
+          user.favourite.add(state.noteId);
         }
       },
-      buildWhen: (_, state) => state is! NoteActionState,
+      buildWhen: (_, state) => state is! NoteActionState && state is! NoteIsReadingState,
       builder: (context, state) {
         if (state is NoteLoadingState) {
+          print(user.userName);
           return Scaffold(
             drawer: NoteDrawer(
               user: user,
@@ -187,7 +212,10 @@ class _ProfileViewState extends State<ProfileView> {
                     child: ListView.builder(
                       itemCount: notes.length,
                       itemBuilder: (context, index) {
-                        return Note(note: notes[index]);
+                        return Note(
+                          note: notes[index],
+                          isFavourite: user.favourite.contains(notes[index].id),
+                        );
                       },
                     ),
                   ),

@@ -4,7 +4,8 @@ import '../../utils/const/note_space.dart';
 import '../../utils/const/note_text.dart';
 
 class PasswordTextField extends StatefulWidget {
-  const PasswordTextField({super.key});
+  final TextEditingController controller;
+  const PasswordTextField({super.key, required this.controller});
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
 }
@@ -15,6 +16,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: widget.controller,
       validator: (password) {
         if (password == null || password.isEmpty) {
           return NText.passwordCannotEmpty;

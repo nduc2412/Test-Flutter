@@ -13,7 +13,7 @@ class LoadingView extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is LoginSuccessState) {
-          Navigator.pushReplacementNamed(context, Routes.profileView);
+          Navigator.pushReplacementNamed(context, Routes.profileView, arguments: state.currentUser);
         }
         else if (state is UserNotLogInState) {
           Navigator.pushReplacementNamed(context, Routes.login);
