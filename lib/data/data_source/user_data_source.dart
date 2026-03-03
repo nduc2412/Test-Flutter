@@ -1,5 +1,7 @@
 import 'package:duckyapp/data/models/auth_user_model.dart';
 
+import '../../domain/entities/note_entity.dart';
+
 abstract class UserDataSource {
   Future<AuthUserModel?> getUser(String id);
 
@@ -20,5 +22,6 @@ abstract class UserDataSource {
     required String userId,
     required String noteId,
   });
+  Future<List<NoteEntity>> getAllFavourite({required List<String> favouriteNotes});
 
 }

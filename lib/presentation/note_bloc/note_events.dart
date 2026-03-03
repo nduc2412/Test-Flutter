@@ -23,7 +23,12 @@ class UpdateNoteEvent implements NoteEvent {
 class ReloadNoteEvent implements NoteEvent {
   const ReloadNoteEvent();
 }
+class DeleteNoteEvent implements NoteEvent {
+  final String noteId;
+  final String userId;
 
+  const DeleteNoteEvent({required this.noteId, required this.userId});
+}
 // Profile view events
 class DeleteFavouriteNoteEvent implements NoteEvent {
   final NoteEntity note;

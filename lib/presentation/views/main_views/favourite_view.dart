@@ -23,6 +23,7 @@ class FavouriteView extends StatefulWidget {
 
 class _FavouriteViewState extends State<FavouriteView> {
   late final AuthUserEntity user;
+  late List<String> favouriteNote;
 
   @override
   void didChangeDependencies() {
@@ -69,7 +70,6 @@ class _FavouriteViewState extends State<FavouriteView> {
       },
       buildWhen: (_, state) => state is! NoteActionState && state is! NoteIsReadingState,
       builder: (context, state) {
-        // Render nội dung dựa trên State
         return Scaffold(
           drawer: NoteDrawer(
             user: user,
@@ -103,7 +103,7 @@ class _FavouriteViewState extends State<FavouriteView> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state is AllNotesLoadedSuccessState) {
+    if (state is NoteIsReadyToBuildState) {
       // Logic quan trọng: Lọc danh sách chỉ lấy những note đã favourite
       final favouriteNotes = state.notes.where((note) => user.favourite.contains(note.id)).toList();
 
@@ -126,7 +126,7 @@ class _FavouriteViewState extends State<FavouriteView> {
                 itemBuilder: (context, index) {
                   return Note(
                     note: favouriteNotes[index],
-                    isFavourite: true, // Vì đã lọc nên chắc chắn là true
+                    isFavourite: true,
                   );
                 },
               ),

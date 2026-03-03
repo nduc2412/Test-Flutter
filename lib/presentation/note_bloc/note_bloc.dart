@@ -39,6 +39,16 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     on<ReadNoteEvent>((event, emit) {
       emit(NoteIsReadingState());
     });
+    on<DeleteNoteEvent>((event, emit) async {
+      emit(NoteNeedToDeleteLocalState(noteId: event.noteId));
+      try {
+        await deleteNoteUseCase(
+          DeleteNoteParams(noteId: event.noteId, userId: event.userId),
+        );
+      } catch (e) {
+        print(e.toString());
+      }
+    });
     on<NoteSaveButtonClickEvent>((event, emit) async {
       emit(NoteLoadingState());
       try {
@@ -119,7 +129,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       final notes = await locator<GetAllNotesUseCase>().call(
         GetAllNotesParams(userId: event.userId),
       );
-      emit(AllNotesLoadedSuccessState(notes: notes));
+      emit(NoteIsReadyToBuildState(notes: notes));
     } catch (e) {
       print(e.toString());
     }

@@ -1,4 +1,5 @@
 
+import '../entities/note_entity.dart';
 import '../entities/user_entity.dart';
 
 abstract class AuthRepository {
@@ -18,4 +19,6 @@ abstract class AuthRepository {
   Future<AuthUserEntity> reloadUser();
   Future<void> deleteFavouriteNote({required String noteId, required String ownerId});
   Future<void> addFavourite({required String userId, required String noteId});
+  Future<List<NoteEntity>> getAllFavourite({required List<String> favouriteNotes});
+
 }

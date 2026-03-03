@@ -29,7 +29,7 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   late final AuthUserEntity user;
-
+  late  List<NoteEntity> notes;
   @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)!.settings.arguments == null) {
@@ -71,6 +71,11 @@ class _ProfileViewState extends State<ProfileView> {
         }
         else if (state is NeedToAddLocalFavouriteNoteState) {
           user.favourite.add(state.noteId);
+        }
+        else if (state is NoteNeedToDeleteLocalState) {
+          setState(() {
+            notes.removeWhere((note) => note.id == state.noteId);
+          });
         }
       },
       buildWhen: (_, state) => state is! NoteActionState && state is! NoteIsReadingState,
@@ -123,8 +128,8 @@ class _ProfileViewState extends State<ProfileView> {
               ),
             ),
           );
-        } else if (state is AllNotesLoadedSuccessState) {
-          List<NoteEntity> notes = state.notes;
+        } else if (state is NoteIsReadyToBuildState) {
+          notes = state.notes;
           return Scaffold(
             floatingActionButton: FloatingActionButton(
               onPressed: () {
@@ -213,6 +218,7 @@ class _ProfileViewState extends State<ProfileView> {
                       itemCount: notes.length,
                       itemBuilder: (context, index) {
                         return Note(
+                          key: ValueKey(notes[index].id),
                           note: notes[index],
                           isFavourite: user.favourite.contains(notes[index].id),
                         );

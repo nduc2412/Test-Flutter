@@ -2,18 +2,25 @@ import 'package:duckyapp/common/main_views_widgets/note_preview.dart';
 
 import '../../domain/entities/note_entity.dart';
 
-class AllNotesLoadedSuccessState implements NoteState {
+class NoteIsReadyToBuildState implements NoteState {
   final List<NoteEntity> notes;
 
-  const AllNotesLoadedSuccessState({required this.notes});
+  const NoteIsReadyToBuildState({required this.notes});
 }
+class NoteLoadedSucceedState implements NoteState {
 
+}
 class NotesNeedReloadState implements NoteActionState {}
 
 class AddNoteSuccessState implements NoteState {}
 
 class NoteLoadingState implements NoteState {}
 
+class NoteNeedToDeleteLocalState implements NoteActionState {
+  String noteId;
+
+  NoteNeedToDeleteLocalState({required this.noteId});
+}
 class NeedToDeleteLocalFavouriteNoteState implements NoteActionState {
   String noteId;
 

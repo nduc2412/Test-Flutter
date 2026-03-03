@@ -7,6 +7,7 @@ import 'package:duckyapp/presentation/views/auth_views/email_verify_waiting.dart
 import 'package:duckyapp/presentation/views/auth_views/loading_view.dart';
 import 'package:duckyapp/presentation/views/auth_views/login_view.dart';
 import 'package:duckyapp/presentation/views/auth_views/sign_up_view.dart';
+import 'package:duckyapp/presentation/views/main_views/favourite_view.dart';
 import 'package:duckyapp/presentation/views/main_views/note_view.dart';
 import 'package:duckyapp/presentation/views/main_views/profile_view.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,9 @@ class AppRouter {
 
       case Routes.favouriteView:
         return MaterialPageRoute(
+          settings: setting,
           builder: (context) {
-            return BlocProvider.value(value: noteBloc, child: const ProfileView());
+            return BlocProvider.value(value: noteBloc, child: const FavouriteView());
           },
         );
 

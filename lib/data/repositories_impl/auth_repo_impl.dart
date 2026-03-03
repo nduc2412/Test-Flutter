@@ -5,6 +5,7 @@ import 'package:duckyapp/domain/entities/user_entity.dart';
 import 'package:duckyapp/domain/repository/auth_repository.dart';
 import 'package:flutter/animation.dart';
 
+import '../../domain/entities/note_entity.dart';
 import '../data_source/auth_data_source.dart';
 import '../data_source/user_data_source.dart';
 
@@ -162,5 +163,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> addFavourite({required String userId, required String noteId}) async {
     await userDataSource.addFavourite(userId: userId, noteId: noteId);
+  }
+
+  @override
+  Future<List<NoteEntity>> getAllFavourite({required List<String> favouriteNotes}) async {
+    return userDataSource.getAllFavourite(favouriteNotes: favouriteNotes);
   }
 }

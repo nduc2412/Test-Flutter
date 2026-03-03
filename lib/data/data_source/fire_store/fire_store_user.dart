@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duckyapp/data/models/auth_user_model.dart';
+import 'package:duckyapp/domain/entities/note_entity.dart';
 import 'package:flutter/foundation.dart';
 import '../auth_data_source.dart';
 import '../fire_base/auth_exceptions.dart';
@@ -113,5 +114,27 @@ class FireStoreUserDataSource implements UserDataSource {
       throw CannotSyncData();
     }
   }
+
+  @override
+  Future<List<NoteEntity>> getAllFavourite({required List<String> favouriteNotes}) async {
+    List<NoteEntity> notes = [];
+    if (favouriteNotes.isEmpty) {
+      return notes;
+    }
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(notesCollectionPath)
+          .where(FieldPath.documentId, whereIn: favouriteNotes)
+          .get();
+      return querySnapshot.docs
+          .map((doc) => NoteEntity.fromFirestore(doc))
+          .toList();
+
+    } catch (e) {
+      log(name: "Fire store user", e.toString());
+      return [];
+    }
+  }
+
 
 }

@@ -27,6 +27,7 @@ import 'domain/use_cases/auth_use_cases/sign_out_use_case.dart';
 import 'domain/use_cases/auth_use_cases/sign_up_use_case.dart';
 import 'domain/use_cases/note_use_cases/add_favourite_use_case.dart';
 import 'domain/use_cases/note_use_cases/delete_favourite_use_case.dart';
+import 'domain/use_cases/note_use_cases/get_all_favourite_use_case.dart';
 import 'domain/use_cases/note_use_cases/get_all_notes_use_caes.dart';
 
 final locator = GetIt.I;
@@ -109,6 +110,10 @@ void setUpDependency() {
   // Add favourite note use case
   locator.registerLazySingleton(
         () => AddFavouriteNoteUseCase(repo: locator<AuthRepository>()),
+  );
+  // Get all favourite notes use case
+  locator.registerLazySingleton(
+        () => GetAllFavouriteUseCase(repo: locator<AuthRepository>()),
   );
 
 

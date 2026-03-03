@@ -92,14 +92,20 @@ class NoteDrawer extends StatelessWidget {
             icon: (index == DrawerIndex.profile)
                 ? Icon(Icons.person)
                 : Icon(Icons.person_outline),
+            onTap: () {
+              Navigator.pushNamed(context, Routes.profileView, arguments: user);
+            },
           ),
           DrawerItem(
             currentPageIndex: index,
             itemIndex: DrawerIndex.favourite,
             titleText: NText.favourite,
-            icon: (index == DrawerIndex.saved)
+            icon: (index == DrawerIndex.favourite)
                 ? Icon(Icons.favorite)
                 : Icon(Icons.favorite_border),
+            onTap: () {
+              Navigator.pushNamed(context, Routes.favouriteView, arguments: user);
+            }
           ),
           DrawerItem(
             currentPageIndex: index,

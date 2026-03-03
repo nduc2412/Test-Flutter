@@ -10,6 +10,7 @@ import '../../domain/entities/note_entity.dart';
 class Note extends StatefulWidget {
   final NoteEntity note;
   bool isFavourite;
+
   Note({super.key, required this.note, required this.isFavourite});
 
   @override
@@ -18,11 +19,13 @@ class Note extends StatefulWidget {
 
 class _NoteState extends State<Note> {
   late bool _isFavourite;
+
   @override
   void initState() {
     _isFavourite = widget.isFavourite;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,16 +49,33 @@ class _NoteState extends State<Note> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title
-                      Hero(
-                        tag: "${widget.note.id}title",
-                        child: Text(
-                          widget.note.title,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: NFontWeight.titleFontWeight,
+                      Row(
+                        children: [
+                          Hero(
+                            tag: "${widget.note.id}title",
+                            child: Text(
+                              widget.note.title,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: NFontWeight.titleFontWeight,
+                              ),
+                            ),
                           ),
-                        ),
+                          Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              context.read<NoteBloc>().add(
+                                DeleteNoteEvent(
+                                  noteId: widget.note.id,
+                                  userId: widget.note.ownerId,
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.delete_outline_outlined),
+                          ),
+                        ],
                       ),
+                      // Preview content
                       Text(
                         widget.note.text,
                         overflow: TextOverflow.clip,
@@ -80,23 +100,23 @@ class _NoteState extends State<Note> {
                               ),
                             ),
                           ),
+
                           Spacer(),
+
+                          // Favourite button
                           IconButton(
-                            icon: _isFavourite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+                            icon: _isFavourite
+                                ? Icon(Icons.favorite)
+                                : Icon(Icons.favorite_border),
                             color: Colors.red,
                             onPressed: () {
                               if (_isFavourite) {
                                 context.read<NoteBloc>().add(
-                                  DeleteFavouriteNoteEvent(
-                                    note: widget.note,
-                                  ),
+                                  DeleteFavouriteNoteEvent(note: widget.note),
                                 );
-                              }
-                              else {
+                              } else {
                                 context.read<NoteBloc>().add(
-                                  AddFavouriteNoteEvent(
-                                    note: widget.note,
-                                  ),
+                                  AddFavouriteNoteEvent(note: widget.note),
                                 );
                               }
                               setState(() {
