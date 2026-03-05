@@ -16,44 +16,29 @@ import '../../utils/routes/routes.dart';
 class NoteDrawer extends StatelessWidget {
   final String currentRoute;
   final AuthUserEntity user;
-  static const List<Widget> _drawerTexts = [
-    DrawerText(NText.profile),
-    DrawerText(NText.favourite),
-    DrawerText(NText.saved),
-    DrawerText(NText.settings),
-    DrawerText(NText.logout),
-  ];
 
-  const NoteDrawer({
-    required this.currentRoute,
-    super.key,
-    required this.user,
-  });
+  const NoteDrawer({required this.currentRoute, super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     late final int index;
-    print("note drawer ${user.email}");
-    switch(currentRoute) {
+
+    // Cập nhật lại logic gán index (Bỏ MyNote và Saved)
+    switch (currentRoute) {
       case Routes.profileView:
-         index = DrawerIndex.profile;
-         break;
-      case Routes.noteView:
-        index = DrawerIndex.myNote;
+        index = DrawerIndex.profile;
         break;
       case Routes.favouriteView:
         index = DrawerIndex.favourite;
-        break;
-      case Routes.savedView:
-        index = DrawerIndex.saved;
         break;
       case Routes.settingsView:
         index = DrawerIndex.settings;
         break;
       default:
-        index = DrawerIndex.myNote;
+        index = -1; // Hoặc một giá trị mặc định không thuộc các mục trên
         break;
     }
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -61,13 +46,13 @@ class NoteDrawer extends StatelessWidget {
           // Drawer header
           DrawerHeader(
             margin: EdgeInsets.zero,
-            decoration: BoxDecoration(color: Colors.yellow),
+            decoration: const BoxDecoration(color: Colors.yellow),
             child: Column(
               children: [
                 Icon(Icons.person, size: NImageSize.profileAvatarHeight),
                 Text(
                   user.userName,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: NTextSize.profileTextFontSize,
                     fontWeight: NFontWeight.boldFontWeight,
                   ),
@@ -76,64 +61,67 @@ class NoteDrawer extends StatelessWidget {
             ),
           ),
 
-          DrawerItem(
-            currentPageIndex: index,
-            itemIndex: DrawerIndex.myNote,
-            titleText: NText.myNotes,
-            icon: (index == DrawerIndex.myNote)
-                ? Icon(Icons.sticky_note_2)
-                : Icon(Icons.sticky_note_2_outlined),
-          ),
-
+          // Mục Profile
           DrawerItem(
             currentPageIndex: index,
             itemIndex: DrawerIndex.profile,
             titleText: NText.profile,
             icon: (index == DrawerIndex.profile)
-                ? Icon(Icons.person)
-                : Icon(Icons.person_outline),
+                ? const Icon(Icons.person)
+                : const Icon(Icons.person_outline),
             onTap: () {
-              Navigator.pushNamed(context, Routes.profileView, arguments: user);
+              // Dùng pushReplacementNamed nếu không muốn chồng tầng Navigator
+              Navigator.pushReplacementNamed(
+                context,
+                Routes.profileView,
+                arguments: user,
+              );
             },
           ),
+
+          // Mục Favourite
           DrawerItem(
             currentPageIndex: index,
             itemIndex: DrawerIndex.favourite,
             titleText: NText.favourite,
             icon: (index == DrawerIndex.favourite)
-                ? Icon(Icons.favorite)
-                : Icon(Icons.favorite_border),
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_border),
             onTap: () {
-              Navigator.pushNamed(context, Routes.favouriteView, arguments: user);
-            }
+              Navigator.pushReplacementNamed(
+                context,
+                Routes.favouriteView,
+                arguments: user,
+              );
+            },
           ),
-          DrawerItem(
-            currentPageIndex: index,
-            itemIndex: DrawerIndex.saved,
-            titleText: NText.saved,
-            icon: (index == DrawerIndex.saved)
-                ? Icon(Icons.bookmark_added)
-                : Icon(Icons.bookmark_added_outlined),
-          ),
+
+          // Mục Settings
           DrawerItem(
             currentPageIndex: index,
             itemIndex: DrawerIndex.settings,
             titleText: NText.settings,
             icon: (index == DrawerIndex.settings)
-                ? Icon(Icons.settings)
-                : Icon(Icons.settings_outlined),
+                ? const Icon(Icons.settings)
+                : const Icon(Icons.settings_outlined),
           ),
+
+          // Mục Logout
           DrawerItem(
             onTap: () {
               context.read<AuthBloc>().add(LogoutButtonClickedEvent());
-              Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                Routes.login,
+                (route) => false,
+              );
             },
             currentPageIndex: index,
             itemIndex: DrawerIndex.logOut,
             titleText: NText.logout,
             icon: (index == DrawerIndex.logOut)
-                ? Icon(Icons.logout)
-                : Icon(Icons.logout_outlined),
+                ? const Icon(Icons.logout)
+                : const Icon(Icons.logout_outlined),
           ),
         ],
       ),
@@ -144,27 +132,40 @@ class NoteDrawer extends StatelessWidget {
 class DrawerItem extends StatelessWidget {
   const DrawerItem({
     super.key,
+
     required this.currentPageIndex,
+
     required this.itemIndex,
+
     required this.titleText,
+
     this.onTap,
+
     this.icon,
   });
 
   final int currentPageIndex;
+
   final int itemIndex;
+
   final String titleText;
+
   final Icon? icon;
+
   final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
+
       height: NButtonSize.drawerButtonSize,
+
       child: ListTile(
         onTap: onTap,
+
         leading: icon,
+
         title: Text(
           titleText,
           style: TextStyle(fontSize: NTextSize.drawerButtonFontSize),
@@ -190,10 +191,8 @@ class DrawerText extends Text {
 }
 
 class DrawerIndex {
-  static const int myNote = 0;
   static const int profile = 1;
   static const int favourite = 2;
-  static const int saved = 3;
   static const int settings = 4;
   static const int logOut = 5;
 }
