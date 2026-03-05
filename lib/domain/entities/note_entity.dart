@@ -6,7 +6,10 @@ class NoteEntity {
   final String title;
   final String text;
   final String ownerId;
-  NoteEntity({required this.id, required this.title, required this.ownerId, this.text = "", });
+  final int? day;
+  final int? month;
+  final int? year;
+  NoteEntity({this.day, this.month, this.year, required this.id, required this.title, required this.ownerId, this.text = "", });
   factory NoteEntity.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return NoteEntity(
@@ -14,6 +17,9 @@ class NoteEntity {
       title: data[fireStoreTitleFieldName] ?? '',
       text: data[fireStoreTextFieldName] ?? '',
       ownerId: data[fireStoreOwnerIdFieldName] ?? '',
+      day: data[fireStoreDayFieldName] ?? 1,
+      month: data[fireStoreMonthFieldName] ?? 1,
+      year: data[fireStoreYearFieldName] ?? 2026,
     );
   }
 }

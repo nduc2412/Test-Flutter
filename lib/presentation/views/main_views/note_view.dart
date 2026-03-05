@@ -284,7 +284,7 @@ class _NoteScreenState extends State<NoteScreen> {
                       child: Hero(
                         tag: "${widget.initialNote.id}date",
                         child: Text(
-                          "1/1/1",
+                          "${note.day}/${note.month}/${note.year}",
                           style: TextStyle(
                             fontWeight: NFontWeight.boldFontWeight,
                             fontSize: NTextSize.noteTitleFontSize,

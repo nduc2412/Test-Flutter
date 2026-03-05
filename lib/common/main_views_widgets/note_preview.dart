@@ -93,7 +93,7 @@ class _NoteState extends State<Note> {
                           Hero(
                             tag: "${widget.note.id}date",
                             child: Text(
-                              "1/1/1",
+                              "${widget.note.day}/${widget.note.month}/${widget.note.year}",
                               style: TextStyle(
                                 fontWeight: NFontWeight.boldFontWeight,
                                 fontSize: 19,
