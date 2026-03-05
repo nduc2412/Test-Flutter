@@ -51,13 +51,21 @@ class LoginSuccessState extends AuthActionState {
   AuthUserEntity currentUser;
   LoginSuccessState(this.currentUser);
 }
+class GetCurrentUserSuccessState extends AuthActionState {
+  AuthUserEntity currentUser;
+  GetCurrentUserSuccessState(this.currentUser);
+}
 // Sign up state
-class SignUpSuccessActionState extends AuthActionState {}
+class SignUpSuccessActionState extends AuthActionState {
+  final AuthUserEntity user;
+  SignUpSuccessActionState(this.user);
+}
 class SignUpNavigationClickedActionState extends AuthActionState {}
 // Log out state
 class LogoutButtonClickedActionState extends AuthActionState {}
 // Email verify state
-class EmailVerifyingWaitingActionState extends AuthActionState {}
+class EmailVerifyingWaitingActionState extends AuthActionState {
+}
 class EmailVerifySuccessActionState extends AuthActionState {}
 class UserNotVerifiedActionState extends AuthActionState {}
 // Forgot password state

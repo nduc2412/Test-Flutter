@@ -136,5 +136,21 @@ class FireStoreUserDataSource implements UserDataSource {
     }
   }
 
+  @override
+  Future<void> updateUserVerifiedStatus(String userId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(usersCollectionPath)
+          .doc(userId)
+          .set({
+        isVerifiedFieldName: true,
+      }, SetOptions(merge: true));
+
+      log(name: "Fire store user update user status", "Update user verified status success");
+    } catch (e) {
+      log(name: "Fire store user update user status", "Update user verified status fail");
+    }
+  }
+
 
 }

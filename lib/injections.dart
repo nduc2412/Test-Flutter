@@ -25,6 +25,7 @@ import 'domain/use_cases/auth_use_cases/get_current_user.dart';
 import 'domain/use_cases/auth_use_cases/send_email_verification_use_case.dart';
 import 'domain/use_cases/auth_use_cases/sign_out_use_case.dart';
 import 'domain/use_cases/auth_use_cases/sign_up_use_case.dart';
+import 'domain/use_cases/auth_use_cases/update_user_verified_use_case.dart';
 import 'domain/use_cases/note_use_cases/add_favourite_use_case.dart';
 import 'domain/use_cases/note_use_cases/delete_favourite_use_case.dart';
 import 'domain/use_cases/note_use_cases/get_all_favourite_use_case.dart';
@@ -86,7 +87,10 @@ void setUpDependency() {
   locator.registerSingleton<GetCurrentUserUseCase>(
     GetCurrentUserUseCase(authRepository: locator<AuthRepository>()),
   );
-
+  // Update user verified status use case
+  locator.registerSingleton<UpdateUserVerifiedUseCase>(
+    UpdateUserVerifiedUseCase(authRepository: locator<AuthRepository>()),
+  );
   // Get notes use case
   locator.registerLazySingleton<GetAllNotesUseCase>(
     () => GetAllNotesUseCase(repo: locator<NoteRepository>()),
@@ -115,7 +119,6 @@ void setUpDependency() {
   locator.registerLazySingleton(
         () => GetAllFavouriteUseCase(repo: locator<AuthRepository>()),
   );
-
 
   // Note bloc
   locator.registerLazySingleton<NoteBloc>(

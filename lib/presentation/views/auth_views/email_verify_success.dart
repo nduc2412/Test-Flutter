@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../common/login_sign_up_widgets/login_sign_up_button.dart';
+import '../../../domain/entities/user_entity.dart';
+import '../../../utils/routes/routes.dart';
 import '../../bloc/bloc.dart';
 import '../../bloc/events.dart';
 import '../../bloc/states.dart';
@@ -18,11 +20,12 @@ class EmailVerifySuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as AuthUserEntity;
     return BlocListener<AuthBloc, AuthState>(
       bloc: context.read<AuthBloc>(),
       listener: (context, state) {
         if (state.runtimeType == NoteViewNavigationClickedState) {
-          navigate();
+          Navigator.pushNamed(context, Routes.profileView, arguments: user);
         }
       },
       child: Scaffold(

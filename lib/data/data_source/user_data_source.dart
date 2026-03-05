@@ -23,5 +23,5 @@ abstract class UserDataSource {
     required String noteId,
   });
   Future<List<NoteEntity>> getAllFavourite({required List<String> favouriteNotes});
-
+  Future<void> updateUserVerifiedStatus(String userId);
 }

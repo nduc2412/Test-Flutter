@@ -151,7 +151,9 @@ class AuthRepositoryImpl implements AuthRepository {
         phoneNumber: userModel?.phoneNumber ?? '',
         favourite: userModel?.favourite ?? [],
       );
-
+      if (authModel.isVerified == false) {
+        log(name: "auth repo at firebase user is not verified at verifying", completeModel.toString());
+      }
       return completeModel.toEntity();
     }
 
@@ -168,5 +170,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<List<NoteEntity>> getAllFavourite({required List<String> favouriteNotes}) async {
     return userDataSource.getAllFavourite(favouriteNotes: favouriteNotes);
+  }
+
+  @override
+  Future<void> updateUserVerifiedStatus(String userId) async {
+    await userDataSource.updateUserVerifiedStatus(userId);
   }
 }

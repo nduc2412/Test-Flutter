@@ -6,6 +6,7 @@ import 'package:duckyapp/domain/use_cases/auth_use_cases/forgot_password_use_cas
 import 'package:duckyapp/domain/use_cases/auth_use_cases/get_current_user.dart';
 import 'package:duckyapp/domain/use_cases/auth_use_cases/login_use_case.dart';
 import 'package:duckyapp/domain/use_cases/auth_use_cases/sign_up_use_case.dart';
+import 'package:duckyapp/domain/use_cases/auth_use_cases/update_user_verified_use_case.dart';
 import 'package:duckyapp/domain/use_cases/auth_use_cases/user_reload_use_case.dart';
 import 'package:duckyapp/presentation/bloc/states.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,6 +62,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<NoteViewNavigationClickedEvent>((event, emit) {
       emit(NoteViewNavigationClickedState());
     });
+    on<NeedToVerifyEmailEvent>((event, emit) {
+      emit(EmailVerifyingWaitingActionState());
+    });
+    on<GetCurrentUserEvent>(getCurrentUser);
   }
 
   // Event handlers
@@ -97,12 +102,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(LoadingState());
     try {
       final user = await _getCurrentUserUseCase.call();
-      if (user.isEmailVerified == false) {
-        log(name: "AuthBloc" ,"Error: User is not verified");
-        emit(EmailVerifyingWaitingActionState());
-        return;
-      }
-      log(name: "AuthBloc" , "Login success initial");
+      log(name: "AuthBloc", "Login success initial");
       emit(LoginSuccessState(user));
     } catch (e) {
       if (e.runtimeType == UserNotLogIn) {
@@ -115,7 +115,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     }
   }
-
+  Future<void> getCurrentUser(
+    GetCurrentUserEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(LoadingState());
+    try {
+      final user = await _getCurrentUserUseCase.call();
+      emit(GetCurrentUserSuccessState(user));
+    } catch (e) {
+      if (e.runtimeType == UserNotLogIn) {
+        emit(UserNotLogInState());
+      }
+    }
+  }
   Future<void> signUpButtonClicked(
     SignUpButtonClickedEvent event,
     Emitter<AuthState> emit,
@@ -132,7 +145,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           phoneNumber: event.phoneNumber,
         ),
       );
-      emit(SignUpSuccessActionState());
+      emit(SignUpSuccessActionState(currentUser));
     } catch (e) {
       if (e is WeakPassword) {
         emit(WeakPasswordState());
@@ -204,8 +217,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final currentUser = await locator<ReloadUserUseCase>().call();
     if (currentUser.isEmailVerified) {
+      log(name: "Bloc user is verified at verifying", currentUser.toString());
+      locator<UpdateUserVerifiedUseCase>().call(
+        UpdateUserVerifiedParams(userId: currentUser.id),
+      );
       emit(EmailVerifySuccessActionState());
     } else {
+      log(
+        name: "Bloc user is not verified at verifying",
+        currentUser.toString(),
+      );
       emit(EmailVerifyingWaitingActionState());
     }
   }

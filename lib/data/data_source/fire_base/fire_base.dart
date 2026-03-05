@@ -95,6 +95,7 @@ class FireBaseAuthDataSource implements AuthDataSource {
   @override
   Future<void> sendEmailVerification() async {
     final currentUser = firebase.currentUser;
+    print(currentUser?.email);
     if (currentUser == null) {
       throw UserNotLogIn();
     } else {

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:duckyapp/domain/use_cases/auth_use_cases/get_current_user.dart';
 import 'package:duckyapp/presentation/bloc/states.dart';
 import 'package:duckyapp/presentation/note_bloc/note_state.dart';
 import 'package:duckyapp/common/main_views_widgets/note_preview.dart';
@@ -17,6 +18,8 @@ import '../../../domain/use_cases/auth_use_cases/user_reload_use_case.dart';
 import '../../../injections.dart';
 import '../../../utils/const/note_space.dart';
 import '../../../utils/routes/routes.dart';
+import '../../bloc/bloc.dart';
+import '../../bloc/events.dart';
 import '../../note_bloc/note_bloc.dart';
 import '../../note_bloc/note_events.dart';
 
@@ -33,16 +36,9 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)!.settings.arguments == null) {
-      user = AuthUserEntity(
-        id: 'L87kkoZcovRi2KRGdDVIGOwN1y83',
-        email: 'phuocduc2007@gmail.com',
-        isEmailVerified: true,
-        userName: 'pduc2412312',
-        firstName: 'Nguyen',
-        lastName: 'Duc',
-        phoneNumber: '0123456789',
-        favourite: [], // Khởi tạo một danh sách rỗng
-      );
+      context.read<AuthBloc>().add(GetCurrentUserEvent());
+      super.didChangeDependencies();
+      return;
     }
     else {
       user = ModalRoute.of(context)!.settings.arguments as AuthUserEntity;

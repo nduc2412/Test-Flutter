@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:duckyapp/common/login_sign_up_widgets/login_sign_up_button.dart';
+import 'package:duckyapp/domain/entities/user_entity.dart';
 import 'package:duckyapp/presentation/bloc/states.dart';
 import 'package:duckyapp/utils/const/font_weight.dart';
 import 'package:duckyapp/utils/const/image.dart';
@@ -15,26 +16,39 @@ import '../../../utils/const/size/text_size.dart';
 import '../../bloc/bloc.dart';
 import '../../bloc/events.dart';
 
-class EmailVerifyWaitingView extends StatelessWidget {
+class EmailVerifyWaitingView extends StatefulWidget {
   const EmailVerifyWaitingView({super.key});
 
   @override
+  State<EmailVerifyWaitingView> createState() => _EmailVerifyWaitingViewState();
+}
+
+class _EmailVerifyWaitingViewState extends State<EmailVerifyWaitingView> {
+  late final Timer _timer;
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add(SendEmailVerifyEvent());
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      context.read<AuthBloc>().add(EmailVerifyCheckReloadEvent());
+    });
+  }
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute
+    final user = ModalRoute
         .of(context)!
         .settings
-        .arguments ?? "";
-    final email = arguments as String;
+        .arguments as AuthUserEntity;
     return BlocListener<AuthBloc, AuthState>(
       bloc: context.read<AuthBloc>(),
       listener: (context, state) {
-        if (state.runtimeType == EmailVerifyingWaitingActionState) {
-          Timer.periodic(const Duration(seconds: 1), (timer) {
-            context.read<AuthBloc>().add(EmailVerifyCheckReloadEvent());
-          });
-        }
-        else if (state.runtimeType == EmailVerifySuccessActionState) {
-         Navigator.pushNamed(context, Routes.verifyEmailSuccess);
+        if (state is EmailVerifySuccessActionState) {
+          Navigator.pushReplacementNamed(context, Routes.verifyEmailSuccess, arguments: user);
         }
       },
       child: Scaffold(
@@ -64,7 +78,7 @@ class EmailVerifyWaitingView extends StatelessWidget {
               // Email address
               SizedBox(height: NSpace.spaceBtwTitleSubTit),
               Text(
-                email,
+                user.email,
                 style: TextStyle(
                   fontWeight: NFontWeight.boldFontWeight,
                   fontSize: NTextSize.subTitleFontSize,
@@ -95,7 +109,9 @@ class EmailVerifyWaitingView extends StatelessWidget {
                 width: double.infinity,
                 child: MainButton(
                   displayText: NText.resendEmail,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<AuthBloc>().add(SendEmailVerifyEvent());
+                  },
                 ),
               ),
             ],

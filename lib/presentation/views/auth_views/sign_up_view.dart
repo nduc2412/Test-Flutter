@@ -3,6 +3,7 @@ import 'package:duckyapp/common/login_sign_up_widgets/footer_social_options.dart
 import 'package:duckyapp/common/login_sign_up_widgets/form_divider.dart';
 import 'package:duckyapp/common/login_sign_up_widgets/login_sign_up_button.dart';
 import 'package:duckyapp/common/login_sign_up_widgets/password_text_field.dart';
+import 'package:duckyapp/domain/entities/user_entity.dart';
 import 'package:duckyapp/presentation/bloc/bloc.dart';
 import 'package:duckyapp/utils/const/size/button_size.dart';
 import 'package:duckyapp/utils/const/field_radius.dart';
@@ -31,6 +32,7 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  late final user;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -38,6 +40,7 @@ class _SignUpViewState extends State<SignUpView> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -54,13 +57,14 @@ class _SignUpViewState extends State<SignUpView> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.runtimeType == SignUpSuccessActionState) {
+          user = (state as SignUpSuccessActionState).user;
           context.read<AuthBloc>().add(SendEmailVerifyEvent());
         } else if (state.runtimeType == EmailVerifyingWaitingActionState) {
           Navigator.pushNamedAndRemoveUntil(
             context,
             Routes.verifyEmailWaiting,
             (route) => false,
-            arguments: _emailController.text,
+            arguments: user,
           );
         } else if (state is AuthErrorState) {
           if (state is UserDisabledState) {
@@ -276,11 +280,11 @@ class _SignUpViewState extends State<SignUpView> {
                                 context.read<AuthBloc>().add(
                                   SignUpButtonClickedEvent(
                                     email: _emailController.text.trim(),
-                                    password: _passwordController.text.trim(),
                                     userName: _userNameController.text.trim(),
                                     firstName: _firstNameController.text.trim(),
                                     lastName: _lastNameController.text.trim(),
                                     phoneNumber: _phoneNumberController.text.trim(),
+                                    password: _passwordController.text.trim(),
                                   ),
                                 );
                               }

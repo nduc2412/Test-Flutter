@@ -1,3 +1,5 @@
+import 'package:duckyapp/domain/entities/user_entity.dart';
+
 abstract class AuthEvent {
   const AuthEvent();
 }
@@ -44,7 +46,9 @@ class LogoutButtonClickedEvent implements AuthEvent {}
 
 // Email Verify event
 class SendEmailVerifyEvent implements AuthEvent {}
+class NeedToVerifyEmailEvent implements AuthEvent {}
 
+// Email verify check event
 class EmailVerifyCheckReloadEvent implements AuthEvent {}
 
 // Forgot password event
@@ -53,6 +57,6 @@ class ForgotPasswordButtonClickedEvent implements AuthEvent {
 
   ForgotPasswordButtonClickedEvent({required this.email});
 }
-
+class GetCurrentUserEvent implements AuthEvent {}
 // Note view navigation event
 class NoteViewNavigationClickedEvent implements AuthEvent {}
