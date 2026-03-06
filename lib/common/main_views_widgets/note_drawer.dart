@@ -109,12 +109,12 @@ class NoteDrawer extends StatelessWidget {
           // Mục Logout
           DrawerItem(
             onTap: () {
-              context.read<AuthBloc>().add(LogoutButtonClickedEvent());
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 Routes.login,
-                (route) => false,
+                    (route) => false,
               );
+              context.read<AuthBloc>().add(LogoutButtonClickedEvent());
             },
             currentPageIndex: index,
             itemIndex: DrawerIndex.logOut,
