@@ -49,6 +49,9 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
         print(e.toString());
       }
     });
+    on<NoteIsReadyToBuildAgainEvent>((event, emit) async {
+      emit(NoteIsReadyToBuildState(notes: event.notes));
+    });
     on<NoteSaveButtonClickEvent>((event, emit) async {
       emit(NoteLoadingState());
       try {

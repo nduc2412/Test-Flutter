@@ -72,6 +72,7 @@ class _ProfileViewState extends State<ProfileView> {
           setState(() {
             notes.removeWhere((note) => note.id == state.noteId);
           });
+          context.read<NoteBloc>().add(NoteIsReadyToBuildAgainEvent(notes: notes));
         }
       },
       buildWhen: (_, state) => state is! NoteActionState && state is! NoteIsReadingState,
@@ -210,7 +211,29 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   SizedBox(height: NSpace.paddingScreenSpaceVertical / 2),
                   Expanded(
-                    child: ListView.builder(
+                    child: notes.isEmpty
+                        ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.note_alt_outlined,
+                            size: 80,
+                            color: Colors.grey.withValues(alpha: 0.5),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            "You don't have any notes yet",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                        : ListView.builder(
                       itemCount: notes.length,
                       itemBuilder: (context, index) {
                         return Note(

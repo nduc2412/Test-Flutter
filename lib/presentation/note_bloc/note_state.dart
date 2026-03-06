@@ -26,7 +26,6 @@ class NeedToDeleteLocalFavouriteNoteState implements NoteActionState {
 
   NeedToDeleteLocalFavouriteNoteState({required this.noteId});
 }
-
 class NeedToAddLocalFavouriteNoteState implements NoteActionState {
   String noteId;
 

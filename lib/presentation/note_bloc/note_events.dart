@@ -19,7 +19,11 @@ class UpdateNoteEvent implements NoteEvent {
 
   const UpdateNoteEvent({required this.userId});
 }
+class NoteIsReadyToBuildAgainEvent implements NoteEvent {
+  final List<NoteEntity> notes;
 
+  const NoteIsReadyToBuildAgainEvent({required this.notes});
+}
 class ReloadNoteEvent implements NoteEvent {
   const ReloadNoteEvent();
 }

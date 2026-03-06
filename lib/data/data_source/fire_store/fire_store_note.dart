@@ -10,7 +10,7 @@ class FireStoreNoteDataSource implements NoteDataSource {
   FireStoreNoteDataSource(this.fireStore);
 
   late final notes = fireStore.collection(notesCollectionPath);
-
+  late final users = fireStore.collection(usersCollectionPath);
   @override
   Future<NoteModel> createNote({required String ownerId}) async {
     try {
@@ -50,6 +50,9 @@ class FireStoreNoteDataSource implements NoteDataSource {
   }) async {
     try {
       await notes.doc(noteId).delete();
+      await users.doc(ownerId).update({
+        favouriteFieldName: FieldValue.arrayRemove([noteId])
+      });
     } catch (e) {
       throw CannotDeleteNote();
     }
