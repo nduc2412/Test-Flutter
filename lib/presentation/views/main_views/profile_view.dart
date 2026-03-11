@@ -32,20 +32,21 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   late final AuthUserEntity user;
-  late  List<NoteEntity> notes;
+  late List<NoteEntity> notes;
+
   @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)!.settings.arguments == null) {
       context.read<AuthBloc>().add(GetCurrentUserEvent());
       super.didChangeDependencies();
       return;
-    }
-    else {
+    } else {
       user = ModalRoute.of(context)!.settings.arguments as AuthUserEntity;
     }
     context.read<NoteBloc>().add(GetAllNotesEvent(userId: user.id));
     super.didChangeDependencies();
   }
+
   @override
   Widget build(BuildContext context) {
     if (ModalRoute.of(context)!.settings.arguments == null) {
@@ -60,22 +61,42 @@ class _ProfileViewState extends State<ProfileView> {
         } else if (state is NoteSuggestionTappedState) {
           Navigator.pushNamed(context, Routes.noteView, arguments: state.note);
         } else if (state is NoteTappedState) {
-          await Navigator.pushNamed(context, Routes.noteView, arguments: state.note);
-        }
-        else if (state is NeedToDeleteLocalFavouriteNoteState) {
+          await Navigator.pushNamed(
+            context,
+            Routes.noteView,
+            arguments: state.note,
+          );
+        } else if (state is NeedToDeleteLocalFavouriteNoteState) {
           user.favourite.remove(state.noteId);
-        }
-        else if (state is NeedToAddLocalFavouriteNoteState) {
+        } else if (state is NeedToAddLocalFavouriteNoteState) {
           user.favourite.add(state.noteId);
-        }
-        else if (state is NoteNeedToDeleteLocalState) {
+        } else if (state is NoteNeedToDeleteLocalState) {
           setState(() {
             notes.removeWhere((note) => note.id == state.noteId);
           });
-          context.read<NoteBloc>().add(NoteIsReadyToBuildAgainEvent(notes: notes));
+          context.read<NoteBloc>().add(
+            NoteIsReadyToBuildAgainEvent(notes: notes),
+          );
+        }
+        else if (state is NoteNeedToAddLocalState) {
+          setState(() {
+            NoteEntity newNote = NoteEntity(
+              id: "Temporary note for local storage",
+              title: "Title",
+              ownerId: user.id,
+              year: DateTime.now().year,
+              month: DateTime.now().month,
+              day: DateTime.now().day,
+            );
+            notes.add(newNote);
+          });
+          context.read<NoteBloc>().add(
+            NoteIsReadyToBuildAgainEvent(notes: notes),
+          );
         }
       },
-      buildWhen: (_, state) => state is! NoteActionState && state is! NoteIsReadingState,
+      buildWhen: (_, state) =>
+          state is! NoteActionState && state is! NoteIsReadingState,
       builder: (context, state) {
         if (state is NoteLoadingState) {
           print(user.userName);
@@ -100,24 +121,6 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               child: Column(
                 children: [
-                  SearchAnchor(
-                    builder: (context, controller) {
-                      return SearchBar(
-                        controller: controller,
-                        onTap: () {
-                          controller.openView();
-                        },
-                        leading: const Icon(Icons.search),
-                      );
-                    },
-                    suggestionsBuilder:
-                        (BuildContext context, SearchController controller) {
-                          return List.generate(5, (index) {
-                            return ListTile(title: Text('Suggestion $index'));
-                          });
-                        },
-                    shrinkWrap: false,
-                  ),
                   Expanded(
                     child: const Center(child: CircularProgressIndicator()),
                   ),
@@ -213,36 +216,38 @@ class _ProfileViewState extends State<ProfileView> {
                   Expanded(
                     child: notes.isEmpty
                         ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.note_alt_outlined,
-                            size: 80,
-                            color: Colors.grey.withValues(alpha: 0.5),
-                          ),
-                          const SizedBox(height: 16),
-                          const Text(
-                            "You don't have any notes yet",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.note_alt_outlined,
+                                  size: 80,
+                                  color: Colors.grey.withValues(alpha: 0.5),
+                                ),
+                                const SizedBox(height: 16),
+                                const Text(
+                                  "You don't have any notes yet",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    )
+                          )
                         : ListView.builder(
-                      itemCount: notes.length,
-                      itemBuilder: (context, index) {
-                        return Note(
-                          key: ValueKey(notes[index].id),
-                          note: notes[index],
-                          isFavourite: user.favourite.contains(notes[index].id),
-                        );
-                      },
-                    ),
+                            itemCount: notes.length,
+                            itemBuilder: (context, index) {
+                              return Note(
+                                key: ValueKey(notes[index].id),
+                                note: notes[index],
+                                isFavourite: user.favourite.contains(
+                                  notes[index].id,
+                                ),
+                              );
+                            },
+                          ),
                   ),
                 ],
               ),

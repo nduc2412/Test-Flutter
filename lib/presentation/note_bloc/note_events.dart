@@ -10,7 +10,6 @@ class GetAllNotesEvent implements NoteEvent {
 
 class AddNoteEvent implements NoteEvent {
   final String userId;
-
   const AddNoteEvent({required this.userId});
 }
 

@@ -4,6 +4,7 @@ import 'package:duckyapp/presentation/bloc/states.dart';
 import 'package:duckyapp/presentation/note_bloc/note_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/note_entity.dart';
 import '../../domain/use_cases/auth_use_cases/get_current_user.dart';
 import '../../domain/use_cases/note_use_cases/add_favourite_use_case.dart';
 import '../../domain/use_cases/note_use_cases/delete_favourite_use_case.dart';
@@ -111,13 +112,11 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
 
   // Function
   Future<void> _addNote(AddNoteEvent event, Emitter<NoteState> emit) async {
-    emit(NoteLoadingState());
+    emit(NoteNeedToAddLocalState());
     try {
       final note = await locator<NewNoteUseCase>().call(
         NewNoteParams(userId: event.userId),
       );
-      reloadUserUseCase.call();
-      emit(NotesNeedReloadState());
     } catch (e) {
       print(e.toString());
     }

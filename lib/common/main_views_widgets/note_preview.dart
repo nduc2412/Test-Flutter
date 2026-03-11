@@ -87,7 +87,8 @@ class _NoteState extends State<Note> {
                           color: Colors.black.withValues(alpha: 0.5),
                         ),
                       ),
-                      // Day created and favourite
+
+                      // Date created and favourite
                       Row(
                         children: [
                           Hero(
